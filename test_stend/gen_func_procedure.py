@@ -285,7 +285,7 @@ class Procedure(object):
     @staticmethod
     def __subtest_meas_volt():
         meas_volt = read_mb.read_analog()
-        fault.debug_msg("измеренное напряжение в процедуре 2х\t" + str(meas_volt), 2)
+        fault.debug_msg(f'измеренное напряжение в процедуре 2х:\t {meas_volt}', 2)
         if meas_volt <= 1.0:
             return True
         else:
@@ -304,8 +304,8 @@ class Procedure(object):
         ctrl_kl.ctrl_relay('KL60', True)
         sleep(1)
         meas_volt = read_mb.read_analog()
-        fault.debug_msg("процедура 3.1 напряжение\t" + str(meas_volt) + "\tдолжно быть в пределах от\t" +
-                        str(min_volt) + "\tдо\t" + str(max_volt), 2)
+        fault.debug_msg(f'процедура 3.1 напряжение:\t {meas_volt} \tдолжно быть в пределах '
+                        f'от\t {min_volt} \tдо\t {max_volt}', 2)
         if min_volt <= meas_volt <= max_volt:
             fault.debug_msg("процедура 3.1 пройдена", 3)
             return meas_volt
@@ -329,8 +329,8 @@ class Procedure(object):
         min_volt = 41.232
         max_volt = 61.848
         meas_volt = read_mb.read_analog()
-        fault.debug_msg("процедура 3.2 напряжение\t" + str(meas_volt) + "\tдолжно быть в пределах от\t" +
-                        str(min_volt) + "\tдо\t" + str(max_volt), 2)
+        fault.debug_msg(f'процедура 3.2 напряжение:\t {meas_volt} \tдолжно быть в пределах '
+                        f'от\t {min_volt} \tдо\t {max_volt}', 2)
         if 41.232 <= meas_volt <= 61.848:
             fault.debug_msg("процедура 3.2 пройдена", 3)
             coef_volt = meas_volt / 51.54
@@ -356,8 +356,8 @@ class Procedure(object):
         min_volt = 77.04
         max_volt = 94.17
         meas_volt = read_mb.read_analog()
-        fault.debug_msg("процедура 3.3 напряжение\t" + str(meas_volt) + "\tдолжно быть в пределах от\t" +
-                        str(min_volt) + "\tдо\t" + str(max_volt), 2)
+        fault.debug_msg(f'процедура 3.3 напряжение:\t {meas_volt} \tдолжно быть в пределах '
+                        f'от\t {min_volt} \tдо\t {max_volt}', 2)
         if 77.04 <= meas_volt <= 94.16:
             fault.debug_msg("процедура 3.3 пройдена", 3)
             return True
@@ -381,8 +381,8 @@ class Procedure(object):
         min_volt = 0.9 * self.setpoint_volt
         max_volt = 1.1 * self.setpoint_volt
         meas_volt = read_mb.read_analog()
-        fault.debug_msg("процедура 3.4 напряжение\t" + str(meas_volt) + "\tдолжно быть в пределах от\t" +
-                        str(min_volt) + "\tдо\t" + str(max_volt), 2)
+        fault.debug_msg(f'процедура 3.4 напряжение:\t {meas_volt} \tдолжно быть в пределах '
+                        f'от\t {min_volt} \tдо\t {max_volt}', 2)
         if 0.9 * self.setpoint_volt <= meas_volt <= 1.1 * self.setpoint_volt:
             fault.debug_msg("процедура 3.4 пройдена", 3)
             return True
@@ -408,8 +408,8 @@ class Procedure(object):
         min_volt = 0.99 * self.setpoint_volt
         max_volt = 1.21 * self.setpoint_volt
         meas_volt = read_mb.read_analog()
-        fault.debug_msg("процедура 3.5 напряжение\t" + str(meas_volt) + "\tдолжно быть в пределах от\t" +
-                        str(min_volt) + "\tдо\t" + str(max_volt), 2)
+        fault.debug_msg(f'процедура 3.5 напряжение:\t {meas_volt} \tдолжно быть в пределах '
+                        f'от\t {min_volt} \tдо\t {max_volt}', 2)
         if 0.99 * self.setpoint_volt <= meas_volt <= 1.21 * self.setpoint_volt:
             fault.debug_msg("процедура 3.5 пройдена", 3)
             return True
@@ -434,8 +434,8 @@ class Procedure(object):
         min_volt = 18.0
         max_volt = 22.0
         meas_volt = read_mb.read_analog()
-        fault.debug_msg("процедура 3.6 напряжение\t" + str(meas_volt) + "\tдолжно быть в пределах от\t" +
-                        str(min_volt) + "\tдо\t" + str(max_volt), 2)
+        fault.debug_msg(f'процедура 3.6 напряжение:\t {meas_volt} \tдолжно быть в пределах '
+                        f'от\t {min_volt} \tдо\t {max_volt}', 2)
         if 18.0 <= meas_volt <= 22.0:
             fault.debug_msg("процедура 3.6 пройдена", 3)
             return True
@@ -460,8 +460,8 @@ class Procedure(object):
         min_volt = 72.0
         max_volt = 88.0
         meas_volt = read_mb.read_analog()
-        fault.debug_msg("процедура 3.7 напряжение\t" + str(meas_volt) + "\tдолжно быть в пределах от\t" +
-                        str(min_volt) + "\tдо\t" + str(max_volt), 2)
+        fault.debug_msg(f'процедура 3.7 напряжение:\t {meas_volt} \tдолжно быть в пределах '
+                        f'от\t {min_volt} \tдо\t {max_volt}', 2)
         if 72.0 <= meas_volt <= 88.0:
             fault.debug_msg("процедура 3.7 пройдена", 3)
             return True
@@ -486,8 +486,8 @@ class Procedure(object):
         min_volt = 22.68
         max_volt = 27.72
         meas_volt = read_mb.read_analog()
-        fault.debug_msg("процедура 3.8 напряжение\t" + str(meas_volt) + "\tдолжно быть в пределах от\t" +
-                        str(min_volt) + "\tдо\t" + str(max_volt), 2)
+        fault.debug_msg(f'процедура 3.8 напряжение:\t {meas_volt} \tдолжно быть в пределах '
+                        f'от\t {min_volt} \tдо\t {max_volt}', 2)
         if min_volt <= meas_volt <= max_volt:
             fault.debug_msg("процедура 3.8 пройдена", 3)
             return True
@@ -512,8 +512,8 @@ class Procedure(object):
         min_volt = 7.38
         max_volt = 9.02
         meas_volt = read_mb.read_analog()
-        fault.debug_msg("процедура 3.9 напряжение\t" + str(meas_volt) + "\tдолжно быть в пределах от\t" +
-                        str(min_volt) + "\tдо\t" + str(max_volt), 2)
+        fault.debug_msg(f'процедура 3.9 напряжение:\t {meas_volt} \tдолжно быть в пределах '
+                        f'от\t {min_volt} \tдо\t {max_volt}', 2)
         if min_volt <= meas_volt <= max_volt:
             fault.debug_msg("процедура 3.9 пройдена", 3)
             return True
@@ -538,8 +538,8 @@ class Procedure(object):
         min_volt = 9.63
         max_volt = 11.77
         meas_volt = read_mb.read_analog()
-        fault.debug_msg("процедура 3.10 напряжение\t" + str(meas_volt) + "\tдолжно быть в пределах от\t" +
-                        str(min_volt) + "\tдо\t" + str(max_volt), 2)
+        fault.debug_msg(f'процедура 3.10 напряжение:\t {meas_volt} \tдолжно быть в пределах '
+                        f'от\t {min_volt} \tдо\t {max_volt}', 2)
         if min_volt <= meas_volt <= max_volt:
             fault.debug_msg("процедура 3.9 пройдена", 3)
             return True
@@ -563,8 +563,8 @@ class Procedure(object):
         min_volt = 0.85 * self.setpoint_volt
         max_volt = 1.1 * self.setpoint_volt
         meas_volt = read_mb.read_analog()
-        fault.debug_msg("процедура 3.4 напряжение\t" + str(meas_volt) + "\tдолжно быть в пределах от\t" +
-                        str(min_volt) + "\tдо\t" + str(max_volt), 2)
+        fault.debug_msg(f'процедура 3.11 напряжение:\t {meas_volt} \tдолжно быть в пределах '
+                        f'от\t {min_volt} \tдо\t {max_volt}', 2)
         if min_volt <= meas_volt <= max_volt:
             fault.debug_msg("процедура 3.4 пройдена", 3)
             return True
@@ -587,8 +587,8 @@ class Procedure(object):
         min_volt = 72.0
         max_volt = 88.0
         meas_volt = read_mb.read_analog()
-        fault.debug_msg("процедура 3.12 напряжение\t" + str(meas_volt) + "\tдолжно быть в пределах от\t" +
-                        str(min_volt) + "\tдо\t" + str(max_volt), 2)
+        fault.debug_msg(f'процедура 3.12 напряжение:\t {meas_volt} \tдолжно быть в пределах '
+                        f'от\t {min_volt} \tдо\t {max_volt}', 2)
         if min_volt <= meas_volt <= max_volt:
             fault.debug_msg("процедура 3.4 пройдена", 3)
             return True
@@ -629,7 +629,7 @@ class Procedure(object):
             if self.start_procedure_22():
                 coef_volt = self.start_procedure_32()
                 if coef_volt != 0:
-                    fault.debug_msg("коэффициент сети\t" + str(coef_volt), 2)
+                    fault.debug_msg(f'коэффициент сети:\t {coef_volt}', 2)
                     return coef_volt
                 else:
                     return False
@@ -645,7 +645,6 @@ class Procedure(object):
         """
         self.coef_volt = coef_volt
         self.setpoint_volt = setpoint_volt
-
         if self.start_procedure_1():
             calc_volt = self.start_procedure_24(coef_volt=self.coef_volt, setpoint_volt=self.setpoint_volt)
             if calc_volt != False:
@@ -665,7 +664,6 @@ class Procedure(object):
         """
         self.coef_volt = coef_volt
         self.setpoint_volt = setpoint_volt
-
         if self.start_procedure_1():
             calc_volt = self.start_procedure_25(coef_volt=self.coef_volt, setpoint_volt=self.setpoint_volt)
             if calc_volt != False:
