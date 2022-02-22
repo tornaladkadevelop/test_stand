@@ -90,11 +90,11 @@ class TestBMZAPSH4(object):
             mysql_conn.mysql_ins_result('неисправен', '1')
             mysql_conn.mysql_error(343)
             reset.sbros_kl63_proc_1_21_31()
-        fault.debug_msg("напряжение соответствует заданному \t" + str(meas_volt), 2)
+        fault.debug_msg(f'напряжение соответствует заданному \t {meas_volt}', 2)
         reset.sbros_kl63_proc_1_21_31()
         mysql_conn.mysql_ins_result('идёт тест 1.3', '1')
         coef_volt = proc.procedure_1_22_32()
-        fault.debug_msg("коэф. сети \t" + str(coef_volt), 2)
+        fault.debug_msg(f'коэф. сети \t {coef_volt}', 2)
         if coef_volt != False:
             pass
         else:
@@ -109,28 +109,27 @@ class TestBMZAPSH4(object):
         mysql_conn.mysql_ins_result('идёт тест 2', '1')
         k = 0
         for i in list_ust:
-            msg_4 = ("Установите регулятор уставок на блоке в положение \t" + str(list_ust_num[k]))
+            msg_4 = (f'Установите регулятор уставок на блоке в положение: {list_ust_num[k]}')
             msg_result = my_msg_2(msg_4)
             if msg_result == 0:
                 pass
             elif msg_result == 1:
                 return False
             elif msg_result == 2:
-                mysql_conn.mysql_add_message('уставка ' + str(list_ust_num[k]) + ' пропущена')
+                mysql_conn.mysql_add_message(f'уставка {list_ust_num[k]} пропущена')
                 list_delta_t.append('пропущена')
                 k += 1
                 continue
-            mysql_conn.mysql_ins_result('уставка ' + str(list_ust_num[k]), '1')
+            mysql_conn.mysql_ins_result(f'уставка {list_ust_num[k]}', '4')
             if proc.procedure_1_24_34(coef_volt=coef_volt, setpoint_volt=i):
                 pass
             else:
                 mysql_conn.mysql_ins_result('неисправен TV1', '1')
             # 2.1.  Проверка срабатывания блока от сигнала нагрузки:
             calc_delta_t = ctrl_kl.ctrl_ai_code_v0(111)
-            fault.debug_msg('delta t\t' + str(calc_delta_t), 2)
+            fault.debug_msg(f'delta t:\t {calc_delta_t}', 2)
             list_delta_t.append(round(calc_delta_t, 0))
-            mysql_conn.mysql_add_message('уставка ' + str(list_ust_num[k]) +
-                                         ' дельта t: ' + str(round(calc_delta_t, 0)))
+            mysql_conn.mysql_add_message(f'уставка {list_ust_num[k]} дельта t: {calc_delta_t:.1f})
             in_a1 = self.__inputs_a()
             if in_a1 == True:
                 fault.debug_msg("вход 1 соответствует", 4)

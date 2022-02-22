@@ -415,7 +415,8 @@ class TestBDUDR01(object):
         fault.debug_msg('подтест 6.3 положение выходов соответствует', 4)
         return True
     
-    def __inputs_a(self):
+    @staticmethod
+    def __inputs_a():
         in_a1 = mb_read.read_discrete(1)
         in_a2 = mb_read.read_discrete(2)
         in_a3 = mb_read.read_discrete(3)

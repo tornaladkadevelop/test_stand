@@ -188,7 +188,8 @@ class TestBDU014TP(object):
         else:
             return False
     
-    def __inputs_a(self):
+    @staticmethod
+    def __inputs_a():
         in_a0 = read_mb.read_discrete(0)
         in_a1 = read_mb.read_discrete(1)
         return in_a0, in_a1

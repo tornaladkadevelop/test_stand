@@ -469,12 +469,14 @@ class TestBKZ3MK(object):
             mysql_conn.mysql_error(330)
             return False
     
-    def __inputs_a(self):
+    @staticmethod
+    def __inputs_a():
         in_a5 = read_mb.read_discrete(5)
         in_a6 = read_mb.read_discrete(6)
         return in_a5, in_a6
     
-    def __inputs_b(self):
+    @staticmethod
+    def __inputs_b():
         in_b0 = read_mb.read_discrete(8)
         in_b1 = read_mb.read_discrete(9)
         return in_b0, in_b1
@@ -483,7 +485,8 @@ class TestBKZ3MK(object):
         in_b1 = read_mb.read_discrete(9)
         return in_b1
     
-    def __inputs_a6(self):
+    @staticmethod
+    def __inputs_a6():
         in_a6 = read_mb.read_discrete(6)
         return in_a6
     

@@ -190,7 +190,8 @@ class TestBDUD(object):
         fault.debug_msg('тест 2.3 положение выходов соответствует', 4)
         return True
     
-    def __inputs_a(self):
+    @staticmethod
+    def __inputs_a():
         in_a1 = read_mb.read_discrete(1)
         return in_a1
 

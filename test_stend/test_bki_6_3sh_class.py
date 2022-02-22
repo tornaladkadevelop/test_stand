@@ -239,7 +239,8 @@ class TestBKI6(object):
         mysql_conn.mysql_ins_result('исправен', '5')
         return True
     
-    def __inputs_a(self):
+    @staticmethod
+    def __inputs_a():
         in_a1 = read_mb.read_discrete(1)
         in_a4 = read_mb.read_discrete(4)
         in_a5 = read_mb.read_discrete(5)
@@ -247,7 +248,8 @@ class TestBKI6(object):
         in_a7 = read_mb.read_discrete(7)
         return in_a1, in_a4, in_a5, in_a6, in_a7
     
-    def __inputs_a1_a7(self):
+    @staticmethod
+    def __inputs_a1_a7():
         in_a1 = read_mb.read_discrete(1)
         in_a7 = read_mb.read_discrete(7)
         return in_a1, in_a7

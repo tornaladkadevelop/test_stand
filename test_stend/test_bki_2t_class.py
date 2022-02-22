@@ -153,7 +153,8 @@ class TestBKI2T(object):
             return False
         return True
     
-    def __inputs_a(self):
+    @staticmethod
+    def __inputs_a():
         in_a1 = read_mb.read_discrete(1)
         in_a2 = read_mb.read_discrete(2)
         in_a5 = read_mb.read_discrete(5)

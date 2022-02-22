@@ -107,7 +107,8 @@ class TestBKIP(object):
         mysql_conn.mysql_ins_result("исправен", "5")
         return True
     
-    def __inputs_a(self):
+    @staticmethod
+    def __inputs_a():
         in_0 = read_mb.read_discrete(0)
         in_1 = read_mb.read_discrete(1)
         return in_0, in_1
