@@ -594,7 +594,7 @@ class Result(object):
 
     def test_error(self, test_number):
         self.test_number = test_number
-        msg = ("Тест: " + str(self.test_number) + " не пройден")
+        msg = (f'Тест: {self.test_number} не пройден')
         my_msg(msg)
         self.reset.reset_all()
 
