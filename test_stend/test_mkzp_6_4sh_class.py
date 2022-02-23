@@ -61,7 +61,7 @@ class TestMKZP6(object):
         sleep(5)
         ctrl_kl.ctrl_relay('KL63', True)
         meas_volt = read_mb.read_analog()
-        fault.debug_msg('измеренное напряжение\t' + str(meas_volt), 2)
+        fault.debug_msg(f'измеренное напряжение:\t{meas_volt}', 2)
         if 0.8 * meas_volt_ust <= meas_volt <= 1.0 * meas_volt_ust:
             pass
         else:
