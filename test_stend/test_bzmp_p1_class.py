@@ -54,8 +54,7 @@ class TestBZMPP1(object):
         min_volt = 0.6 * meas_volt_ust
         max_volt = 1.0 * meas_volt_ust
         meas_volt = read_mb.read_analog()
-        fault.debug_msg("напряжение после включения KL63\t" + str(meas_volt) + "\tдолжно быть от\t" +
-                        str(min_volt) + "\tдо\t" + str(max_volt), 3)
+        fault.debug_msg(f'напряжение после включения KL63\t{meas_volt}\tдолжно быть от\t{min_volt}\tдо\t{max_volt}', 3)
         if min_volt <= meas_volt <= max_volt:
             pass
         else:
@@ -85,7 +84,7 @@ class TestBZMPP1(object):
             sleep(0.2)
             timer_test_1 = time() - start_timer_test_1
             in_a1, in_a6 = self.__inputs_a()
-            fault.debug_msg('времени прошло \t' + str(timer_test_1), 2)
+            fault.debug_msg(f'времени прошло\t{timer_test_1}', 2)
             if in_a1 == True and in_a6 == False:
                 break
             else:
@@ -186,7 +185,7 @@ class TestBZMPP1(object):
             in_a6 = self.__inputs_a6()
             stop_timer = time() - start_timer
         timer_test_5_2 = stop_timer
-        fault.debug_msg('таймер тест 3 ' + str(timer_test_5_2), 2)
+        fault.debug_msg(f'таймер тест 3: {timer_test_5_2}', 2)
         in_a1, in_a6 = self.__inputs_a()
         if in_a1 == False and in_a6 == True and timer_test_5_2 <= 12:
             pass
@@ -210,7 +209,7 @@ class TestBZMPP1(object):
             fault.debug_msg("положение выходов не соответствует", 1)
             mysql_conn.mysql_ins_result("неисправен", "5")
             return False
-        mysql_conn.mysql_ins_result("исправен, " + str(round(timer_test_5_2, 1)) + " сек", "3")
+        mysql_conn.mysql_ins_result(f'исправен, {timer_test_5_2:.1f} сек', "3")
         # Тест 4. Проверка защиты от перегрузки
         # Сообщение	«С помощью кнопок SB1…SB3 перейдите к окну на дисплее блока с надписью «Токи фаз»
         msg_5 = "С помощью кнопок SB1…SB3 перейдите к окну на дисплее блока с надписью «Токи фаз»"
@@ -245,9 +244,9 @@ class TestBZMPP1(object):
         while in_a6 == False and stop_timer <= 360:
             in_a6 = self.__inputs_a6()
             stop_timer = time() - start_timer
-            fault.debug_msg('таймер тест 4 ' + str(stop_timer), 2)
+            fault.debug_msg(f'таймер тест 4: {stop_timer}', 2)
         timer_test_6_2 = stop_timer
-        fault.debug_msg('таймер тест 4 ' + str(timer_test_6_2), 2)
+        fault.debug_msg(f'таймер тест 4: {timer_test_6_2}', 2)
         in_a1, in_a6 = self.__inputs_a()
         if in_a1 == False and in_a6 == True and timer_test_6_2 <= 360:
             pass
@@ -267,7 +266,7 @@ class TestBZMPP1(object):
             fault.debug_msg("положение выходов не соответствует", 1)
             mysql_conn.mysql_ins_result("неисправен", "4")
             return False
-        mysql_conn.mysql_ins_result("исправен, " + str(round(timer_test_6_2, 1)) + " сек", "4")
+        mysql_conn.mysql_ins_result(f'исправен, {timer_test_6_2:.1f} сек', "4")
         return True
     
     def __sbros_zashit(self):
@@ -276,20 +275,24 @@ class TestBZMPP1(object):
         mb_ctrl.ctrl_relay('KL24', False)
         sleep(0.7)
     
-    def __inputs_a(self):
+    @staticmethod
+    def __inputs_a():
         in_a1 = read_mb.read_discrete(1)
         in_a6 = read_mb.read_discrete(6)
         return in_a1, in_a6
     
-    def __inputs_a5(self):
+    @staticmethod
+    def __inputs_a5():
         in_a5 = read_mb.read_discrete(5)
         return in_a5
     
-    def __inputs_a6(self):
+    @staticmethod
+    def __inputs_a6():
         in_a6 = read_mb.read_discrete(6)
         return in_a6
     
-    def __inputs_b(self):
+    @staticmethod
+    def __inputs_b():
         in_a9 = read_mb.read_discrete(9)
         return in_a9
 
