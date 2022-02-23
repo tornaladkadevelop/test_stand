@@ -28,6 +28,7 @@ fault = Bug(True)
 
 
 class TestBDU1(object):
+
     def __init__(self):
         pass
     
@@ -143,7 +144,7 @@ class TestBDU1(object):
         if in_a1 == False:
             fault.debug_msg(f'{in_a1=} \tтест 6 пройден', 3)
             mysql_conn.mysql_ins_result('исправен', '6')
-            fault.debug_msg(f'{in_a1=} \tтест завершен', 4)
+            fault.debug_msg(f'{in_a1=} \tтест завершен', 3)
         else:
             fault.debug_msg(f'{in_a1=} \tТест 6 блок неисправен', 1)
             mysql_conn.mysql_ins_result('неисправен', '6')
@@ -152,6 +153,8 @@ class TestBDU1(object):
     
     def __inputs_a(self):
         in_a1 = read_mb.read_discrete(1)
+        if in_a1 == None:
+            fault.debug_msg(f'нет связи с контроллером', 1)
         return in_a1
 
 
