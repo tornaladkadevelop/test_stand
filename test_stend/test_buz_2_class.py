@@ -70,8 +70,7 @@ class TestBUZ2(object):
         min_volt = 0.6 * meas_volt_ust
         max_volt = 1.0 * meas_volt_ust
         meas_volt = read_mb.read_analog()
-        fault.debug_msg("напряжение после включения KL63\t" + str(meas_volt) + "\tдолжно быть от\t" +
-                        str(min_volt) + "\tдо\t" + str(max_volt), 3)
+        fault.debug_msg(f'напряжение после включения KL63\t{meas_volt}\tдолжно быть от\t{min_volt}\tдо\t{max_volt}', 3)
         if min_volt <= meas_volt <= max_volt:
             pass
         else:
@@ -239,7 +238,7 @@ class TestBUZ2(object):
         while in_a1 == True and stop_timer <= 360:
             in_a1 = self.__inputs_a1()
             stop_timer = time() - start_timer
-            fault.debug_msg("\r {}".format('таймер тест 3.2 ' + str(stop_timer), end=""), 2)
+            fault.debug_msg(f'таймер тест 3.2 {stop_timer}', 2)
         timer_test_3 = stop_timer
         in_a1, in_a2 = self.__inputs_a()
         if in_a1 == False and in_a2 == False and timer_test_3 <= 360:
@@ -251,19 +250,22 @@ class TestBUZ2(object):
             return False
         fault.debug_msg("тест 3.2 положение выходов соответствует", 4)
         reset.sbros_kl63_proc_all()
-        mysql_conn.mysql_ins_result("исправен, " + str(round(timer_test_3, 1)) + "сек", "3")
+        mysql_conn.mysql_ins_result(f'исправен, {timer_test_3:.1f} сек', "3")
         return True
     
-    def __inputs_a(self):
+    @staticmethod
+    def __inputs_a():
         in_a1 = read_mb.read_discrete(1)
         in_a2 = read_mb.read_discrete(2)
         return in_a1, in_a2
     
-    def __inputs_a1(self):
+    @staticmethod
+    def __inputs_a1():
         in_a1 = read_mb.read_discrete(1)
         return in_a1
 
-    def __inputs_b(self):
+    @staticmethod
+    def __inputs_b():
         in_a9 = read_mb.read_discrete(9)
         return in_a9
 
