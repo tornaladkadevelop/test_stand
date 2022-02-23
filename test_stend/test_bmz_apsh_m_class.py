@@ -77,7 +77,7 @@ class TestBMZAPSHM(object):
         # 1.1.2. Проверка отсутствия короткого замыкания на входе измерительной части блока:
         ctrl_kl.ctrl_relay('KL63', True)
         meas_volt = read_mb.read_analog()
-        fault.debug_msg("измеряем напряжение\t" + str(meas_volt), 4)
+        fault.debug_msg(f'измеряем напряжение:\t {meas_volt}', 4)
         if 0.9 * meas_volt_ust <= meas_volt <= 1.1 * meas_volt_ust:
             fault.debug_msg("напряжение соответствует", 3)
             pass
@@ -97,7 +97,7 @@ class TestBMZAPSHM(object):
         else:
             mysql_conn.mysql_ins_result('неисправен', '1')
             return False
-        fault.debug_msg("вычисляем коэффициент сети \t" + str(coef_volt), 4)
+        fault.debug_msg(f'вычисляем коэффициент сети:\t {coef_volt}', 4)
         reset.stop_procedure_32()
         mysql_conn.mysql_ins_result('исправен', '1')
         fault.debug_msg("тест 1 завершен", 3)
@@ -232,7 +232,8 @@ class TestBMZAPSHM(object):
         mysql_conn.mysql_ins_result('исправен', '3')
         return True
     
-    def __inputs_a(self):
+    @staticmethod
+    def __inputs_a():
         in_a1 = read_mb.read_discrete(1)
         in_a2 = read_mb.read_discrete(2)
         in_a5 = read_mb.read_discrete(5)
