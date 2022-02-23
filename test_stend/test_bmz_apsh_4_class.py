@@ -129,7 +129,7 @@ class TestBMZAPSH4(object):
             calc_delta_t = ctrl_kl.ctrl_ai_code_v0(111)
             fault.debug_msg(f'delta t:\t {calc_delta_t}', 2)
             list_delta_t.append(round(calc_delta_t, 0))
-            mysql_conn.mysql_add_message(f'уставка {list_ust_num[k]} дельта t: {calc_delta_t:.1f})
+            mysql_conn.mysql_add_message(f'уставка {list_ust_num[k]} дельта t: {calc_delta_t:.1f}')
             in_a1 = self.__inputs_a()
             if in_a1 == True:
                 fault.debug_msg("вход 1 соответствует", 4)
@@ -169,8 +169,7 @@ class TestBMZAPSH4(object):
         calc_delta_t = ctrl_kl.ctrl_ai_code_v0(111)
         fault.debug_msg('delta t\t' + str(calc_delta_t), 2)
         list_delta_t[-1] = round(calc_delta_t, 0)
-        mysql_conn.mysql_add_message('уставка ' + str(list_ust_num[k]) +
-                                     ' дельта t: ' + str(round(calc_delta_t, 0)))
+        mysql_conn.mysql_add_message(f'уставка {list_ust_num[k]} дельта t: {calc_delta_t:.1f}')
         in_a1 = self.__inputs_a()
         if in_a1 == True:
             pass
@@ -198,11 +197,13 @@ class TestBMZAPSH4(object):
         fault.debug_msg("вход 1 соответствует", 4)
         return True
     
-    def __inputs_a(self):
+    @staticmethod
+    def __inputs_a():
         in_a1 = read_mb.read_discrete(1)
         return in_a1
     
-    def __inputs_b(self):
+    @staticmethod
+    def __inputs_b():
         in_b0 = read_mb.read_discrete(8)
         in_b1 = read_mb.read_discrete(9)
         return in_b0, in_b1
