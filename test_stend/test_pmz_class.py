@@ -90,8 +90,7 @@ class TestPMZ(object):
         min_volt = 0.4 * meas_volt_ust
         max_volt = 1.1 * meas_volt_ust
         meas_volt = read_mb.read_analog()
-        fault.debug_msg("напряжение после включения KL63\t" + str(meas_volt) + "\tдолжно быть от\t" +
-                        str(min_volt) + "\tдо\t" + str(max_volt), 3)
+        fault.debug_msg(f'напряжение после включения KL63\t{meas_volt}\tдолжно быть от\t{min_volt}\tдо\t{max_volt}', 3)
         if min_volt <= meas_volt <= max_volt:
             pass
         else:
@@ -160,7 +159,7 @@ class TestPMZ(object):
         fault.debug_msg("положение выходов блока соответствует", 4)
         mysql_conn.mysql_ins_result('исправен', '2')
 
-        ###################################################################################################################
+        ##########################################################################################################
         # Тест 3. Проверка срабатывания блока по уставкам
 
         # Сообщение	«Переключите тумблер на корпусе блока в положение «Работа»
@@ -171,14 +170,14 @@ class TestPMZ(object):
             return False
         k = 0
         for i in list_ust:
-            msg_3 = ("Установите регулятор уставок на блоке в положение\t" + str(list_ust_num[k]))
+            msg_3 = (f'Установите регулятор уставок на блоке в положение\t{list_ust_num[k]}')
             msg_result = my_msg_2(msg_3)
             if msg_result == 0:
                 pass
             elif msg_result == 1:
                 return False
             elif msg_result == 2:
-                mysql_conn.mysql_add_message('уставка ' + str(list_ust_num[k]) + ' пропущена')
+                mysql_conn.mysql_add_message(f'уставка {list_ust_num[k]} пропущена')
                 list_delta_percent.append('пропущена')
                 list_delta_t.append('пропущена')
                 k += 1
@@ -197,12 +196,10 @@ class TestPMZ(object):
                 pass
             else:
                 mysql_conn.mysql_ins_result('неисправен', '3')
-            fault.debug_msg("время срабатывания, мс\t" + str(calc_delta_t), 5)
+            fault.debug_msg(f'время срабатывания, мс\t{calc_delta_t}', 5)
             list_delta_t.append(calc_delta_t)
-            mysql_conn.mysql_add_message('уставка ' + str(list_ust_num[k]) + ' дельта t: '
-                                         + str(round(calc_delta_t, 0)))
-            mysql_conn.mysql_add_message('уставка ' + str(list_ust_num[k]) + ' дельта %: '
-                                         + str(round(calc_delta_percent, 0)))
+            mysql_conn.mysql_add_message(f'уставка {list_ust_num[k]} дельта t: {calc_delta_t:.0f}')
+            mysql_conn.mysql_add_message(f'уставка {list_ust_num[k]} дельта %: {calc_delta_percent:.0f}')
             in_a1, in_a2, in_a5 = self.__inputs_a()
             if in_a1 == True and in_a2 == True and in_a5 == False:
                 fault.debug_msg("положение выходов блока соответствует", 4)
@@ -260,12 +257,10 @@ class TestPMZ(object):
             pass
         else:
             mysql_conn.mysql_ins_result('неисправен', '3')
-        fault.debug_msg("время срабатывания, мс\t" + str(calc_delta_t), 5)
+        fault.debug_msg(f'время срабатывания, мс\t{calc_delta_t}', 5)
         list_delta_t[-1] = calc_delta_t
-        mysql_conn.mysql_add_message('уставка ' + str(list_ust_num[k]) + ' дельта t: '
-                                     + str(round(calc_delta_t, 0)))
-        mysql_conn.mysql_add_message('уставка ' + str(list_ust_num[k]) + ' дельта %: '
-                                     + str(round(calc_delta_percent, 0)))
+        mysql_conn.mysql_add_message(f'уставка {list_ust_num[k]} дельта t: {calc_delta_t:.0f}')
+        mysql_conn.mysql_add_message(f'уставка {list_ust_num[k]} дельта %: {calc_delta_percent:.0f}')
         in_a1, in_a2, in_a5 = self.__inputs_a()
         if in_a1 == True and in_a2 == True and in_a5 == False:
             pass
@@ -292,13 +287,15 @@ class TestPMZ(object):
         fault.debug_msg("положение выходов блока соответствует", 4)
         return True
 
-    def __inputs_a(self):
+    @staticmethod
+    def __inputs_a():
         in_a1 = read_mb.read_discrete(1)
         in_a2 = read_mb.read_discrete(2)
         in_a5 = read_mb.read_discrete(5)
         return in_a1, in_a2, in_a5
 
-    def __inputs_b(self):
+    @staticmethod
+    def __inputs_b():
         in_b0 = read_mb.read_discrete(8)
         return in_b0
 
