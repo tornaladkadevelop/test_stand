@@ -64,7 +64,7 @@ class TestMTZP2(object):
         sleep(5)
         ctrl_kl.ctrl_relay('KL63', True)
         meas_volt = read_mb.read_analog()
-        fault.debug_msg('измеренное напряжение\t' + str(meas_volt), 2)
+        fault.debug_msg(f'измеренное напряжение\t{meas_volt}', 2)
         if 0.8 * meas_volt_ust <= meas_volt <= 1.0 * meas_volt_ust:
             pass
         else:
@@ -274,7 +274,7 @@ class TestMTZP2(object):
             sleep(0.2)
             in_a1, in_b2 = self.__inputs_a1_b2()
             __timer = time() - start_timer
-            fault.debug_msg('времени прошло\t' + str(__timer), 2)
+            fault.debug_msg(f'времени прошло\t{__timer}', 2)
         in_a1, in_b2 = self.__inputs_a1_b2()
         if in_b2 == True and in_a1 == False and __timer <= 35:
             pass
@@ -389,7 +389,7 @@ class TestMTZP2(object):
             sleep(0.2)
             in_a1, in_b2 = self.__inputs_a1_b2()
             __timer_2 = time() - start_timer_2
-            fault.debug_msg('времени прошло\t' + str(__timer_2), 2)
+            fault.debug_msg(f'времени прошло\t{__timer_2}', 2)
         in_a1, in_b2 = self.__inputs_a1_b2()
         if in_b2 == True and in_a1 == False and __timer_2 <= 65:
             pass
@@ -413,16 +413,12 @@ class TestMTZP2(object):
         mysql_conn.mysql_ins_result('исправен', '7')
         return True
     
-    def __inputs_a1_b2(self):
+    @staticmethod
+    def __inputs_a1_b2():
         in_a1 = read_mb.read_discrete(1)
         in_b2 = read_mb.read_discrete(10)
         return in_a1, in_b2
     
-    # def __inputs_b(self):
-    #     in_b0 = read_mb.read_discrete(8)
-    #     in_b1 = read_mb.read_discrete(9)
-    #     return in_b0, in_b1
-
 
 if __name__ == '__main__':
     try:
