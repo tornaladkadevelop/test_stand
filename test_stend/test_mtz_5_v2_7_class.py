@@ -96,8 +96,7 @@ class TestMTZ5V27(object):
         min_volt = 0.6 * meas_volt_ust
         max_volt = 1.0 * meas_volt_ust
         meas_volt = read_mb.read_analog()
-        fault.debug_msg("напряжение после включения KL63\t" + str(round(meas_volt, 2)) + "\tдолжно быть от\t" +
-                        str(min_volt) + "\tдо\t" + str(max_volt), 3)
+        fault.debug_msg(f'напряжение после включения KL63\t{meas_volt}\tдолжно быть от\t{min_volt}\tдо\t{max_volt}', 3)
         if min_volt <= meas_volt <= max_volt:
             pass
         else:
@@ -190,13 +189,13 @@ class TestMTZ5V27(object):
         msg_5 = "Установите регулятор уставок на блоке в положение \t"
         k = 0
         for i in list_ust_mtz:
-            msg_result_mtz = my_msg_2(msg_5 + str(list_ust_mtz_num[k]))
+            msg_result_mtz = my_msg_2(f'{msg_5} {list_ust_mtz_num[k]}')
             if msg_result_mtz == 0:
                 pass
             elif msg_result_mtz == 1:
                 return False
             elif msg_result_mtz == 2:
-                mysql_conn.mysql_add_message('уставка ' + str(list_ust_mtz_num[k]) + ' пропущена')
+                mysql_conn.mysql_add_message(f'уставка {list_ust_mtz_num[k]} пропущена')
                 list_delta_percent_mtz.append('пропущена')
                 list_delta_t_mtz.append('пропущена')
                 k += 1
@@ -208,23 +207,21 @@ class TestMTZ5V27(object):
                 return False
             fault.debug_msg("3.1.  Проверка срабатывания блока от сигнала нагрузки:", 3)
             # 3.1.  Проверка срабатывания блока от сигнала нагрузки:
-            mysql_conn.mysql_ins_result('уставка ' + str(list_ust_mtz_num[k]), '3')
+            mysql_conn.mysql_ins_result(f'уставка {list_ust_mtz_num[k]}', '3')
             # Δ%= 0.0029*(U4)2+5.192*U4
             meas_volt = read_mb.read_analog()
             calc_delta_percent_mtz = 0.0029 * meas_volt ** 2 + 5.192 * meas_volt
-            fault.debug_msg("дельта %\t" + str(calc_delta_percent_mtz), 2)
+            fault.debug_msg(f'дельта %:\t{calc_delta_percent_mtz}', 2)
             list_delta_percent_mtz.append(round(calc_delta_percent_mtz, 0))
             calc_delta_t_mtz = ctrl_kl.ctrl_ai_code_v0(110)
             if calc_delta_t_mtz != 9999:
                 pass
             else:
                 mysql_conn.mysql_ins_result('неисправен', '3')
-            fault.debug_msg("дельта t\t" + str(calc_delta_t_mtz), 3)
+            fault.debug_msg(f'дельта t:\t{calc_delta_t_mtz}', 3)
             list_delta_t_mtz.append(round(calc_delta_t_mtz, 0))
-            mysql_conn.mysql_add_message('уставка ' + str(list_ust_mtz_num[k]) + ' дельта t: '
-                                         + str(round(calc_delta_t_mtz, 0)))
-            mysql_conn.mysql_add_message('уставка ' + str(list_ust_mtz_num[k]) + ' дельта %: '
-                                         + str(round(calc_delta_percent_mtz, 0)))
+            mysql_conn.mysql_add_message(f'уставка {list_ust_mtz_num[k]} дельта t: {calc_delta_t_mtz:.0f}')
+            mysql_conn.mysql_add_message(f'уставка {list_ust_mtz_num[k]} дельта %: {calc_delta_percent_mtz:.0f}')
             in_a1, in_a5 = self.__inputs_a()
             if in_a1 == False and in_a5 == True:
                 reset.stop_procedure_3()
@@ -261,22 +258,22 @@ class TestMTZ5V27(object):
         mysql_conn.mysql_ins_result('идёт тест 4', '4')
         m = 0
         for n in list_ust_tzp:
-            if my_msg(msg_8 + str(list_ust_tzp_num[m])):
+            if my_msg(f'{msg_8} {list_ust_tzp_num[m]}'):
                 pass
             else:
                 return False
-            msg_result_tzp = my_msg_2(msg_8 + str(list_ust_tzp_num[m]))
+            msg_result_tzp = my_msg_2(f'{msg_8} {list_ust_tzp_num[m]}')
             if msg_result_tzp == 0:
                 pass
             elif msg_result_tzp == 1:
                 return False
             elif msg_result_tzp == 2:
-                mysql_conn.mysql_add_message('уставка ' + str(list_ust_tzp_num[m]) + ' пропущена')
+                mysql_conn.mysql_add_message(f'уставка {list_ust_tzp_num[m]} пропущена')
                 list_delta_percent_tzp.append('пропущена')
                 list_delta_t_tzp.append('пропущена')
                 k += 1
                 continue
-            mysql_conn.mysql_ins_result('уставка ' + str(list_ust_tzp_num[m]), '4')
+            mysql_conn.mysql_ins_result(f'уставка {list_ust_tzp_num[m]}', '4')
             if proc.procedure_1_24_34(setpoint_volt=n, coef_volt=coef_volt):
                 pass
             else:
@@ -285,7 +282,7 @@ class TestMTZ5V27(object):
             # Δ%= 0.0132*U42[i]+5.4183* U4[i]
             meas_volt = read_mb.read_analog()
             calc_delta_percent_tzp = 0.0132 * meas_volt ** 2 + 5.4183 * meas_volt
-            fault.debug_msg("дельта %\t" + str(calc_delta_percent_tzp), 2)
+            fault.debug_msg(f'дельта %:\t{calc_delta_percent_tzp}', 2)
             list_delta_percent_tzp.append(calc_delta_percent_tzp)
             # 4.4.  Проверка срабатывания блока от сигнала нагрузки:
             ctrl_kl.ctrl_relay('KL63', True)
@@ -303,12 +300,10 @@ class TestMTZ5V27(object):
             stop_timer_tzp = time()
             ctrl_kl.ctrl_relay('KL63', False)
             calc_delta_t_tzp = stop_timer_tzp - start_timer_tzp
-            fault.debug_msg("тест 3 delta t " + str(calc_delta_t_tzp), 2)
+            fault.debug_msg(f'тест 3 delta t: {calc_delta_t_tzp}', 2)
             list_delta_t_tzp.append(round(calc_delta_t_tzp, 0))
-            mysql_conn.mysql_add_message('уставка ' + str(list_ust_tzp_num[m]) + ' дельта t: '
-                                         + str(round(calc_delta_t_tzp, 0)))
-            mysql_conn.mysql_add_message('уставка ' + str(list_ust_tzp_num[m]) + ' дельта %: '
-                                         + str(round(calc_delta_percent_tzp, 0)))
+            mysql_conn.mysql_add_message(f'уставка {list_ust_tzp_num[m]} дельта t: {calc_delta_t_tzp:.0f}')
+            mysql_conn.mysql_add_message(f'уставка {list_ust_tzp_num[m]} дельта %: {calc_delta_percent_tzp:.0f}')
             in_a1, in_a5 = self.__inputs_a()
             if in_a1 == False and in_a5 == True and calc_delta_t_tzp <= 21:
                 fault.debug_msg("положение выходов соответствует", 4)
@@ -367,10 +362,8 @@ class TestMTZ5V27(object):
         else:
             mysql_conn.mysql_ins_result('неисправен', '3')
         list_delta_t_mtz[-1] = calc_delta_t_mtz
-        mysql_conn.mysql_add_message('уставка ' + str(list_ust_mtz_num[k]) + ' дельта t: '
-                                     + str(round(calc_delta_t_mtz, 0)))
-        mysql_conn.mysql_add_message('уставка ' + str(list_ust_mtz_num[k]) + ' дельта %: '
-                                     + str(round(calc_delta_percent_mtz, 0)))
+        mysql_conn.mysql_add_message(f'уставка {list_ust_mtz_num[k]} дельта t: {calc_delta_t_mtz:.0f}')
+        mysql_conn.mysql_add_message(f'уставка {list_ust_mtz_num[k]} дельта %: {calc_delta_percent_mtz:.0f}')
         in_a1, in_a5 = self.__inputs_a()
         if in_a1 == False and in_a5 == True:
             reset.stop_procedure_3()
@@ -453,12 +446,14 @@ class TestMTZ5V27(object):
             fault.debug_msg("тест 4.6 положение выходов не соответствует", 1)
             return False
     
-    def __inputs_a(self):
+    @staticmethod
+    def __inputs_a():
         in_a1 = read_mb.read_discrete(1)
         in_a5 = read_mb.read_discrete(5)
         return in_a1, in_a5
     
-    def __inputs_a5(self):
+    @staticmethod
+    def __inputs_a5():
         in_a5 = read_mb.read_discrete(5)
         return in_a5
     
@@ -468,7 +463,8 @@ class TestMTZ5V27(object):
         ctrl_kl.ctrl_relay('KL1', True)
         sleep(2)
     
-    def __inputs_b(self):
+    @staticmethod
+    def __inputs_b():
         in_b1 = read_mb.read_discrete(9)
         return in_b1
 
