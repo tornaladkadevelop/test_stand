@@ -111,7 +111,7 @@ class TestUMZ(object):
         min_volt = 0.4 * meas_volt_ust
         max_volt = 1.1 * meas_volt_ust
         meas_volt = read_mb.read_analog()
-        fault.debug_msg("напряжение после включения KL63 \t" + str(meas_volt), 2)
+        fault.debug_msg(f'напряжение после включения KL63 \t{meas_volt}', 2)
         if min_volt <= meas_volt <= max_volt:
             pass
         else:
@@ -131,7 +131,7 @@ class TestUMZ(object):
             mysql_conn.mysql_ins_result('неисправен', '1')
             mysql_conn.mysql_error(150)
             return False
-        fault.debug_msg("коэф. сети\t " + str(coef_volt), 2)
+        fault.debug_msg(f'коэф. сети\t {coef_volt}', 2)
         mysql_conn.mysql_ins_result('исправен', '1')
         reset.stop_procedure_32()
     
@@ -148,28 +148,28 @@ class TestUMZ(object):
         k = 0
         for i in list_ust:
             mysql_conn.mysql_ins_result("идет тест", "2")
-            msg_5 = ("Установите оба регулятора уставок на блоке в положение \t" + str(list_ust_num[k]))
+            msg_5 = (f'Установите оба регулятора уставок на блоке в положение \t{list_ust_num[k]}')
             msg_result = my_msg_2(msg_5)
             if msg_result == 0:
                 pass
             elif msg_result == 1:
                 return False
             elif msg_result == 2:
-                mysql_conn.mysql_add_message('уставка ' + str(list_ust_num[k]) + ' пропущена')
+                mysql_conn.mysql_add_message(f'уставка {list_ust_num[k]} пропущена')
                 list_delta_percent_ab.append('пропущена')
                 list_delta_t_ab.append('пропущена')
                 list_delta_percent_vg.append('пропущена')
                 list_delta_t_vg.append('пропущена')
                 k += 1
                 continue
-            progress_msg = ("формируем U уставки" + str(k))
+            progress_msg = (f'формируем U уставки {k}')
             mysql_conn.mysql_ins_result(progress_msg, '2')
             if proc.procedure_1_24_34(coef_volt=coef_volt, setpoint_volt=i):
                 pass
             else:
                 mysql_conn.mysql_ins_result('неисправен', '2')
                 return False
-            progress_msg = ("канал АБ дельта t" + str(k))
+            progress_msg = (f'канал АБ дельта t {k}')
             mysql_conn.mysql_ins_result(progress_msg, '2')
             calc_delta_t_ab = ctrl_kl.ctrl_ai_code_v0(109)
             if calc_delta_t_ab != 9999:
@@ -180,16 +180,14 @@ class TestUMZ(object):
             in_a1, in_a5 = self.__inputs_a()
             if in_a1 == True and in_a5 == False:
                 # Δ%= 0,00004762*(U4)2+9,5648* U4
-                progress_msg = ("канал АБ дельта %" + str(k))
+                progress_msg = (f'канал АБ дельта % {k}')
                 mysql_conn.mysql_ins_result(progress_msg, '2')
                 meas_volt_ab = read_mb.read_analog()
                 calc_delta_percent_ab = 0.00004762 * meas_volt_ab ** 2 + 9.5648 * meas_volt_ab
                 list_delta_percent_ab.append(calc_delta_percent_ab)
                 test_setpoint_ab = True
-                mysql_conn.mysql_add_message('уставка ' + str(list_ust_num[k]) + ' дельта t: '
-                                             + str(round(calc_delta_t_ab, 0)))
-                mysql_conn.mysql_add_message('уставка ' + str(list_ust_num[k]) + ' дельта %: '
-                                             + str(round(calc_delta_percent_ab, 0)))
+                mysql_conn.mysql_add_message(f'уставка {list_ust_num[k]} дельта t: {calc_delta_t_ab:.0f}')
+                mysql_conn.mysql_add_message(f'уставка {list_ust_num[k]} дельта %: {calc_delta_percent_ab:.0f}')
             else:
                 test_setpoint_ab = False
             ctrl_kl.ctrl_relay('KL73', True)
@@ -197,7 +195,7 @@ class TestUMZ(object):
                 pass
             else:
                 return False
-            progress_msg = ("канал ВГ дельта t" + str(k))
+            progress_msg = (f'канал ВГ дельта t {k}')
             mysql_conn.mysql_ins_result(progress_msg, '2')
             calc_delta_t_vg = ctrl_kl.ctrl_ai_code_v0(109)
             if calc_delta_t_ab != 9999:
@@ -208,16 +206,14 @@ class TestUMZ(object):
             in_a1, in_a5 = self.__inputs_a()
             if in_a1 == True and in_a5 == False:
                 # Δ%= 0,00004762*(U4)2+9,5648* U4
-                progress_msg = ("канал ВГ дельта %" + str(k))
+                progress_msg = (f'канал ВГ дельта % {k}')
                 mysql_conn.mysql_ins_result(progress_msg, '2')
                 meas_volt_vg = read_mb.read_analog()
                 calc_delta_percent_vg = 0.00004762 * meas_volt_vg ** 2 + 9.5648 * meas_volt_vg
                 list_delta_percent_vg.append(calc_delta_percent_vg)
                 test_setpoint_vg = True
-                mysql_conn.mysql_add_message('уставка ' + str(list_ust_num[k]) + ' дельта t: '
-                                             + str(round(calc_delta_t_vg, 0)))
-                mysql_conn.mysql_add_message('уставка ' + str(list_ust_num[k]) + ' дельта %: '
-                                             + str(round(calc_delta_percent_vg, 0)))
+                mysql_conn.mysql_add_message(f'уставка {list_ust_num[k]} дельта t: {calc_delta_t_vg:.0f}')
+                mysql_conn.mysql_add_message(f'уставка {list_ust_num[k]} дельта %: {calc_delta_percent_vg:.0f}')
             else:
                 test_setpoint_vg = False
             ctrl_kl.ctrl_relay('KL73', False)
@@ -230,7 +226,7 @@ class TestUMZ(object):
                 k += 1
                 continue
             elif test_setpoint_ab == False and test_setpoint_vg == False:
-                progress_msg = ("повышаем U уставки" + str(k))
+                progress_msg = (f'повышаем U уставки {k}')
                 mysql_conn.mysql_ins_result(progress_msg, '2')
                 if proc.procedure_1_25_35(coef_volt=coef_volt, setpoint_volt=i):
                     pass
@@ -250,8 +246,7 @@ class TestUMZ(object):
                     calc_delta_percent_ab = 0.00004762 * meas_volt_ab ** 2 + 9.5648 * meas_volt_ab
                     list_delta_percent_ab[-1] = calc_delta_percent_ab
                     test_setpoint_ab = True
-                    mysql_conn.mysql_add_message('уставка ' + str(list_ust_num[k]) + ' дельта t: '
-                                                 + str(round(calc_delta_t_ab, 0)))
+                    mysql_conn.mysql_add_message(f'уставка {list_ust_num[k]} дельта t: {calc_delta_t_ab:.0f}')
                 else:
                     test_setpoint_ab = False
                 ctrl_kl.ctrl_relay('KL73', True)
@@ -272,10 +267,8 @@ class TestUMZ(object):
                     calc_delta_percent_vg = 0.00004762 * meas_volt_vg ** 2 + 9.5648 * meas_volt_vg
                     list_delta_percent_vg[-1] = calc_delta_percent_vg
                     test_setpoint_vg = True
-                    mysql_conn.mysql_add_message('уставка ' + str(list_ust_num[k]) + ' дельта t: '
-                                                 + str(round(calc_delta_t_vg, 0)))
-                    mysql_conn.mysql_add_message('уставка ' + str(list_ust_num[k]) + ' дельта %: '
-                                                 + str(round(calc_delta_percent_vg, 0)))
+                    mysql_conn.mysql_add_message(f'уставка {list_ust_num[k]} дельта t: {calc_delta_t_vg:.0f}')
+                    mysql_conn.mysql_add_message(f'уставка {list_ust_num[k]} дельта %: {calc_delta_percent_vg:.0f}')
                 else:
                     test_setpoint_vg = False
                 ctrl_kl.ctrl_relay('KL73', False)
@@ -312,10 +305,8 @@ class TestUMZ(object):
                     calc_delta_percent_ab = 0.00004762 * meas_volt_ab ** 2 + 9.5648 * meas_volt_ab
                     list_delta_percent_ab[-1] = calc_delta_percent_ab
                     test_setpoint_ab = True
-                    mysql_conn.mysql_add_message('уставка ' + str(list_ust_num[k]) + ' дельта t: '
-                                                 + str(round(calc_delta_t_ab, 0)))
-                    mysql_conn.mysql_add_message('уставка ' + str(list_ust_num[k]) + ' дельта %: '
-                                                 + str(round(calc_delta_percent_ab, 0)))
+                    mysql_conn.mysql_add_message(f'уставка {list_ust_num[k]} дельта t: {calc_delta_t_ab:.0f}')
+                    mysql_conn.mysql_add_message(f'уставка {list_ust_num[k]} дельта %: {calc_delta_percent_ab:.0f}')
                 else:
                     test_setpoint_ab = False
                 reset.stop_procedure_3()
@@ -352,10 +343,8 @@ class TestUMZ(object):
                     calc_delta_percent_vg = 0.00004762 * meas_volt_vg ** 2 + 9.5648 * meas_volt_vg
                     list_delta_percent_vg[-1] = calc_delta_percent_vg
                     test_setpoint_vg = True
-                    mysql_conn.mysql_add_message('уставка ' + str(list_ust_num[k]) + ' дельта t: '
-                                                 + str(round(calc_delta_t_vg, 0)))
-                    mysql_conn.mysql_add_message('уставка ' + str(list_ust_num[k]) + ' дельта %: '
-                                                 + str(round(calc_delta_percent_vg, 0)))
+                    mysql_conn.mysql_add_message(f'уставка {list_ust_num[k]} дельта t: {calc_delta_t_vg:.0f}')
+                    mysql_conn.mysql_add_message(f'уставка {list_ust_num[k]} дельта %: {calc_delta_percent_vg:.0f}')
                 else:
                     test_setpoint_vg = False
                 ctrl_kl.ctrl_relay('KL73', False)
@@ -384,7 +373,8 @@ class TestUMZ(object):
             mysql_conn.mysql_error(481)
             return False
     
-    def __inputs_a(self):
+    @staticmethod
+    def __inputs_a():
         in_a1 = read_mb.read_discrete(1)
         in_a5 = read_mb.read_discrete(5)
         return in_a1, in_a5
