@@ -18,159 +18,209 @@ from gen_mysql_connect import *
 
 __all__ = ["TestBDU1"]
 
-reset = ResetRelay()
-resist = Resistor()
-result = Result()
-ctrl_kl = CtrlKL()
-read_mb = ReadMB()
-mysql_conn = MySQLConnect()
-fault = Bug(True)
-
 
 class TestBDU1(object):
+
+    __reset = ResetRelay()
+    __resist = Resistor()
+    __ctrl_kl = CtrlKL()
+    __read_mb = ReadMB()
+    __mysql_conn = MySQLConnect()
+    __fault = Bug(True)
 
     def __init__(self):
         pass
     
-    def st_test_bdu_1(self):
-        # reset.reset_all()
+    def st_test_1_bdu_1(self):
+        """
+            Тест 1. Проверка исходного состояния блока
+        """
         in_a1 = self.__inputs_a()
-        if in_a1 == False:
-            mysql_conn.mysql_ins_result('исправен', '1')
-            fault.debug_msg(f'{in_a1=} \tтест 1 пройден', 3)
+        if in_a1 is False:
+            pass
         else:
-            fault.debug_msg(f'{in_a1=} \tблок неисправен', 1)
-            mysql_conn.mysql_ins_result('неисправен', '1')
+            self.__fault.debug_msg(f'{in_a1=} \tблок неисправен', 1)
+            self.__mysql_conn.mysql_ins_result('неисправен', '1')
             return False
-        # Тест-2 Проверка включения/отключения блока от кнопки пуск
-        # Включение KL2
-        ctrl_kl.ctrl_relay('KL2', True)
-        sleep(3)
-        # Тест-2.1 Проверка исходного состояния
-        in_a1 = self.__inputs_a()
-        if in_a1 == False:
-            fault.debug_msg(f'{in_a1=} \tтест 2.1 пройден', 3)
-        else:
-            fault.debug_msg(f'{in_a1=} \tблок неисправен', 1)
-            mysql_conn.mysql_ins_result('неисправен', '2')
-            return False
-        # Тест-2.2 Проверка канала блока от кнопки "Пуск"
-        #  формируем 10 Ом
-        resist.resist_ohm(10)
-        sleep(3)
-        ctrl_kl.ctrl_relay('KL12', True)
+        self.__mysql_conn.mysql_ins_result('исправен', '1')
+        self.__fault.debug_msg(f'{in_a1=} \tтест 1 пройден', 3)
+        return True
+
+    def st_test_20_bdu_1(self):
+        """
+            Тест-2 Проверка включения/отключения блока от кнопки пуск
+        """
+        self.__ctrl_kl.ctrl_relay('KL2', True)
         sleep(3)
         in_a1 = self.__inputs_a()
-        if in_a1 == True:
-            fault.debug_msg(f'{in_a1=} \tтест 2.2 пройден', 3)
+        if in_a1 is False:
+            pass
         else:
-            fault.debug_msg(f'{in_a1=} \tТест 2.2 блок неисправен', 1)
-            mysql_conn.mysql_ins_result('неисправен', '2')
+            self.__fault.debug_msg(f'{in_a1=} \tблок неисправен', 1)
+            self.__mysql_conn.mysql_ins_result('неисправен', '2')
             return False
-        # Тест 2.3 Выключение канала блока от кнопки «Пуск» при сопротивлении 10 Ом
+        self.__fault.debug_msg(f'{in_a1=} \tтест 2.1 пройден', 3)
+        return True
+
+    def st_test_22_bdu_1(self):
+        """
+            Тест-2.2 Проверка канала блока от кнопки "Пуск"
+        """
+        self.__resist.resist_ohm(10)
         sleep(3)
-        ctrl_kl.ctrl_relay('KL12', False)
+        self.__ctrl_kl.ctrl_relay('KL12', True)
         sleep(3)
         in_a1 = self.__inputs_a()
-        if in_a1 == False:
-            fault.debug_msg(f'{in_a1=} \tтест 2.3 пройден', 3)
-            mysql_conn.mysql_ins_result('исправен', '2')
+        if in_a1 is True:
+            pass
         else:
-            fault.debug_msg(f'{in_a1=} \tТест 2.3 блок неисправен', 1)
-            mysql_conn.mysql_ins_result('неисправен', '2')
+            self.__fault.debug_msg(f'{in_a1=} \tТест 2.2 блок неисправен', 1)
+            self.__mysql_conn.mysql_ins_result('неисправен', '2')
             return False
+        self.__fault.debug_msg(f'{in_a1=} \tтест 2.2 пройден', 3)
+        return True
+
+    def st_test_23_bdu_1(self):
+        """
+            Тест 2.3 Выключение канала блока от кнопки «Пуск» при сопротивлении 10 Ом
+        """
+        sleep(3)
+        self.__ctrl_kl.ctrl_relay('KL12', False)
+        sleep(3)
+        in_a1 = self.__inputs_a()
+        if in_a1 is False:
+            pass
+        else:
+            self.__fault.debug_msg(f'{in_a1=} \tТест 2.3 блок неисправен', 1)
+            self.__mysql_conn.mysql_ins_result('неисправен', '2')
+            return False
+        self.__fault.debug_msg(f'{in_a1=} \tтест 2.3 пройден', 3)
+        self.__mysql_conn.mysql_ins_result('исправен', '2')
+        return True
+
+    def st_test_30_bdu_1(self):
         # Тест-3. Удержание исполнительного элемента при сопротивлении цепи заземления до 35 Ом
         sleep(3)
-        ctrl_kl.ctrl_relay('KL12', True)
+        self.__ctrl_kl.ctrl_relay('KL12', True)
         sleep(0.5)
         # Отключаем KL5, KL8 для формирования 35 Ом
-        ctrl_kl.ctrl_relay('KL5', False)
-        ctrl_kl.ctrl_relay('KL8', False)
+        self.__ctrl_kl.ctrl_relay('KL5', False)
+        self.__ctrl_kl.ctrl_relay('KL8', False)
         sleep(1)
         in_a1 = self.__inputs_a()
-        if in_a1 == False:
-            fault.debug_msg(f'{in_a1=} \tтест 3 пройден', 3)
-            mysql_conn.mysql_ins_result('исправен', '3')
+        if in_a1 is False:
+            pass
         else:
-            fault.debug_msg(f'{in_a1=} \tТест 3 блок неисправен', 1)
-            mysql_conn.mysql_ins_result('неисправен', '3')
+            self.__fault.debug_msg(f'{in_a1=} \tТест 3 блок неисправен', 1)
+            self.__mysql_conn.mysql_ins_result('неисправен', '3')
             return False
-        # Тест 4. Отключение исполнительного элемента при сопротивлении цепи заземления свыше 50 Ом
-        ctrl_kl.ctrl_relay('KL7', False)
-        ctrl_kl.ctrl_relay('KL9', False)
-        ctrl_kl.ctrl_relay('KL4', True)
-        ctrl_kl.ctrl_relay('KL6', True)
-        ctrl_kl.ctrl_relay('KL10', True)
+        self.__fault.debug_msg(f'{in_a1=} \tтест 3 пройден', 3)
+        self.__mysql_conn.mysql_ins_result('исправен', '3')
+        return True
+
+    def st_test_40_bdu_1(self):
+        """
+            Тест 4. Отключение исполнительного элемента при сопротивлении цепи заземления свыше 50 Ом
+        """
+        self.__ctrl_kl.ctrl_relay('KL7', False)
+        self.__ctrl_kl.ctrl_relay('KL9', False)
+        self.__ctrl_kl.ctrl_relay('KL4', True)
+        self.__ctrl_kl.ctrl_relay('KL6', True)
+        self.__ctrl_kl.ctrl_relay('KL10', True)
         sleep(2)
         in_a1 = self.__inputs_a()
-        if in_a1 == False:
-            fault.debug_msg(f'{in_a1=} \tтест 4 пройден', 3)
-            mysql_conn.mysql_ins_result('исправен', '4')
+        if in_a1 is False:
+            pass
         else:
-            fault.debug_msg(f'{in_a1=} \tТест 4 блок неисправен', 1)
-            mysql_conn.mysql_ins_result('неисправен', '4')
+            self.__fault.debug_msg(f'{in_a1=} \tТест 4 блок неисправен', 1)
+            self.__mysql_conn.mysql_ins_result('неисправен', '4')
             return False
-        ctrl_kl.ctrl_relay('KL12', True)
+        self.__fault.debug_msg(f'{in_a1=} \tтест 4 пройден', 3)
+        self.__mysql_conn.mysql_ins_result('исправен', '4')
+        self.__ctrl_kl.ctrl_relay('KL12', True)
         sleep(0.5)
-        # Тест 5. Защита от потери управляемости при замыкании проводов ДУ
-        #  формируем 10 Ом
-        resist.resist_ohm(10)
+        return True
+
+    def st_test_50_bdu_1(self):
+        """
+            Тест 5. Защита от потери управляемости при замыкании проводов ДУ
+        """
+        self.__resist.resist_ohm(10)
         sleep(1)
-        ctrl_kl.ctrl_relay('KL12', True)
+        self.__ctrl_kl.ctrl_relay('KL12', True)
         sleep(0.5)
-        ctrl_kl.ctrl_relay('KL11', True)
+        self.__ctrl_kl.ctrl_relay('KL11', True)
         sleep(1)
         in_a1 = self.__inputs_a()
-        if in_a1 == False:
-            fault.debug_msg(f'{in_a1=} \tтест 5 пройден', 3)
-            mysql_conn.mysql_ins_result('исправен', '5')
+        if in_a1 is False:
+            pass
         else:
-            fault.debug_msg(f'{in_a1=} \tТест 5 блок неисправен', 1)
-            mysql_conn.mysql_ins_result('неисправен', '5')
+            self.__fault.debug_msg(f'{in_a1=} \tТест 5 блок неисправен', 1)
+            self.__mysql_conn.mysql_ins_result('неисправен', '5')
             return False
-        ctrl_kl.ctrl_relay('KL12', False)
-        ctrl_kl.ctrl_relay('KL11', False)
-        ctrl_kl.ctrl_relay('KL1', False)
-        # Тест 6. Защита от потери управляемости при обрыве проводов ДУ
-        #  формируем 10 Ом
-        resist.resist_ohm(10)
+        self.__fault.debug_msg(f'{in_a1=} \tтест 5 пройден', 3)
+        self.__mysql_conn.mysql_ins_result('исправен', '5')
+        self.__ctrl_kl.ctrl_relay('KL12', False)
+        self.__ctrl_kl.ctrl_relay('KL11', False)
+        self.__ctrl_kl.ctrl_relay('KL1', False)
+        return True
+
+    def st_test_60_bdu_1(self):
+        """
+            Тест 6. Защита от потери управляемости при обрыве проводов ДУ
+        """
+        self.__resist.resist_ohm(10)
         sleep(1)
-        ctrl_kl.ctrl_relay('KL12', True)
-        # opc['Устройство.tg.in_pusk_KL12'] = True
+        self.__ctrl_kl.ctrl_relay('KL12', True)
         sleep(1)
-        ctrl_kl.ctrl_relay('KL12', False)
+        self.__ctrl_kl.ctrl_relay('KL12', False)
         sleep(2)
         in_a1 = self.__inputs_a()
-        if in_a1 == False:
-            fault.debug_msg(f'{in_a1=} \tтест 6 пройден', 3)
-            mysql_conn.mysql_ins_result('исправен', '6')
-            fault.debug_msg(f'{in_a1=} \tтест завершен', 3)
+        if in_a1 is False:
+            pass
         else:
-            fault.debug_msg(f'{in_a1=} \tТест 6 блок неисправен', 1)
-            mysql_conn.mysql_ins_result('неисправен', '6')
+            self.__fault.debug_msg(f'{in_a1=} \tТест 6 блок неисправен', 1)
+            self.__mysql_conn.mysql_ins_result('неисправен', '6')
             return False
+        self.__fault.debug_msg(f'{in_a1=} \tтест 6 пройден', 3)
+        self.__mysql_conn.mysql_ins_result('исправен', '6')
+        self.__fault.debug_msg(f'{in_a1=} \tтест завершен', 3)
         return True
     
     def __inputs_a(self):
-        in_a1 = read_mb.read_discrete(1)
-        if in_a1 == None:
-            fault.debug_msg(f'нет связи с контроллером', 1)
+        in_a1 = self.__read_mb.read_discrete(1)
+        if in_a1 is None:
+            self.__fault.debug_msg(f'нет связи с контроллером', 1)
         return in_a1
+
+    def st_test_bdu_1(self):
+        """
+            главная функция которая собирает все остальные
+        """
+        __test_1 = self.st_test_1_bdu_1()
+        __test_20 = self.st_test_20_bdu_1()
+        __test_22 = self.st_test_22_bdu_1()
+        __test_23 = self.st_test_23_bdu_1()
+        __test_3 = self.st_test_30_bdu_1()
+        __test_4 = self.st_test_40_bdu_1()
+        __test_5 = self.st_test_50_bdu_1()
+        __test_6 = self.st_test_60_bdu_1()
+        if __test_1 and __test_20 and __test_22 and __test_23 and __test_3 and __test_4 and __test_5 and __test_6:
+            self.__mysql_conn.mysql_block_good()
+            my_msg('Блок исправен')
+        else:
+            self.__mysql_conn.mysql_block_bad()
+            my_msg('Блок неисправен')
+        self.__reset.reset_all()
 
 
 if __name__ == '__main__':
     try:
         test_bdu_1 = TestBDU1()
-        if test_bdu_1.st_test_bdu_1():
-            mysql_conn.mysql_block_good()
-            my_msg('Блок исправен')
-        else:
-            mysql_conn.mysql_block_bad()
-            my_msg('Блок неисправен')
+        test_bdu_1.st_test_bdu_1()
     except OSError:
         my_msg("ошибка системы")
     except SystemError:
         my_msg("внутренняя ошибка")
     finally:
-        reset.reset_all()
         exit()
