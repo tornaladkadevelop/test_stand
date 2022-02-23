@@ -98,8 +98,7 @@ class TestMMTZD(object):
         min_volt = 0.4 * meas_volt_ust
         max_volt = 1.1 * meas_volt_ust
         meas_volt = read_mb.read_analog()
-        fault.debug_msg("напряжение после включения KL63\t" + str(meas_volt) + "\tдолжно быть от\t" +
-                        str(min_volt) + "\tдо\t" + str(max_volt), 3)
+        fault.debug_msg(f'напряжение после включения KL63\t{meas_volt}\tдолжно быть от\t{min_volt}\tдо\t{max_volt}', 3)
         if min_volt <= meas_volt <= max_volt:
             pass
         else:
@@ -110,7 +109,7 @@ class TestMMTZD(object):
         reset.sbros_kl63_proc_1_21_31()
         # 1.2. Определение коэффициента Кс отклонения фактического напряжения от номинального
         coef_volt = proc.procedure_1_22_32()
-        fault.debug_msg("коэф. сети равен " + str(coef_volt), 4)
+        fault.debug_msg(f'коэф. сети равен: {coef_volt}', 4)
         if coef_volt != False:
             pass
         else:
@@ -136,13 +135,13 @@ class TestMMTZD(object):
             return False
         k = 0
         for i in list_ust:
-            msg_result = my_msg_2(msg_4 + str(list_ust_num[k]))
+            msg_result = my_msg_2(f'{msg_4} {list_ust_num[k]}')
             if msg_result == 0:
                 pass
             elif msg_result == 1:
                 return False
             elif msg_result == 2:
-                mysql_conn.mysql_add_message('уставка ' + str(list_ust_num[k]) + ' пропущена')
+                mysql_conn.mysql_add_message(f'уставка {list_ust_num[k]} пропущена')
                 k += 1
                 continue
             if proc.start_procedure_1():
@@ -208,13 +207,13 @@ class TestMMTZD(object):
             return False
         x = 0
         for y in list_ust:
-            msg_result = my_msg_2(msg_6 + str(list_ust_num[x]))
+            msg_result = my_msg_2(f'{msg_6} {list_ust_num[x]}')
             if msg_result == 0:
                 pass
             elif msg_result == 1:
                 return False
             elif msg_result == 2:
-                mysql_conn.mysql_add_message('уставка ' + str(list_ust_num[x]) + ' пропущена')
+                mysql_conn.mysql_add_message(f'уставка {list_ust_num[x]} пропущена')
                 x += 1
                 continue
             if proc.start_procedure_1():
@@ -418,16 +417,12 @@ class TestMMTZD(object):
             mysql_conn.mysql_error(418)
             return False
     
-    def __inputs_a(self):
+    @staticmethod
+    def __inputs_a():
         in_a1 = read_mb.read_discrete(1)
         in_a5 = read_mb.read_discrete(5)
         return in_a1, in_a5
     
-    # def __inputs_b(self):
-    #     in_b0 = read_mb.read_discrete(8)
-    #     in_b1 = read_mb.read_discrete(9)
-    #     return in_b0, in_b1
-
 
 if __name__ == '__main__':
     try:
