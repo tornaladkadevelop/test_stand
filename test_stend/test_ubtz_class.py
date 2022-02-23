@@ -144,17 +144,17 @@ class TestUBTZ(object):
         msg_1 = "Установите регулятор БМЗ, расположенный на корпусе блока, в положение\t"
         k = 0
         for i in list_ust_bmz:
-            msg_result_bmz = my_msg_2(msg_1 + str(list_ust_bmz_num[k]))
+            msg_result_bmz = my_msg_2(f'{msg_1} {list_ust_bmz_num[k]}')
             if msg_result_bmz == 0:
                 pass
             elif msg_result_bmz == 1:
                 return False
             elif msg_result_bmz == 2:
-                mysql_conn.mysql_add_message('уставка ' + str(list_ust_bmz_num[k]) + ' пропущена')
+                mysql_conn.mysql_add_message(f'уставка {list_ust_bmz_num[k]} пропущена')
                 list_delta_t_bmz.append('пропущена')
                 k += 1
                 continue
-            mysql_conn.mysql_ins_result("уставка БМЗ " + str(list_ust_bmz_num[k]), '1')
+            mysql_conn.mysql_ins_result(f'уставка БМЗ {list_ust_bmz_num[k]}', '1')
             if proc.procedure_1_24_34(coef_volt=coef_volt, setpoint_volt=i):
                 pass
             else:
@@ -162,12 +162,9 @@ class TestUBTZ(object):
                 return False
             # 3.1.  Проверка срабатывания блока от сигнала нагрузки:
             calc_delta_t_bmz = ctrl_kl.ctrl_ai_code_v0(109)
-            fault.debug_msg('тест 2, дельта t\t' + str(calc_delta_t_bmz), 2)
+            fault.debug_msg(f'тест 2, дельта t\t{calc_delta_t_bmz}', 2)
             list_delta_t_bmz.append(calc_delta_t_bmz)
-            mysql_conn.mysql_add_message('уставка ' + str(list_ust_bmz_num[k]) + ' дельта t: '
-                                         + str(round(calc_delta_t_bmz, 0)))
-            # mysql_conn.mysql_add_message('уставка ' + str(list_ust_bmz_num[k]) + ' дельта %: '
-            #                              + str(round(calc_delta_percent, 0)))
+            mysql_conn.mysql_add_message(f'уставка {list_ust_bmz_num[k]} дельта t: {calc_delta_t_bmz}')
             in_a1, in_a2, in_a5, in_a6 = self.__inputs_a()
             if in_a1 == True and in_a5 == False and in_a2 == False and in_a6 == True:
                 fault.debug_msg('тест 2 положение выходов соответствует', 4)
@@ -218,17 +215,17 @@ class TestUBTZ(object):
         msg_3 = "Установите регулятор ТЗП, расположенный на блоке в положение\t"
         m = 0
         for n in list_ust_tzp:
-            msg_result_tzp = my_msg_2(msg_3 + str(list_ust_tzp_num[m]))
+            msg_result_tzp = my_msg_2(f'{msg_3} {list_ust_tzp_num[m]}')
             if msg_result_tzp == 0:
                 pass
             elif msg_result_tzp == 1:
                 return False
             elif msg_result_tzp == 2:
-                mysql_conn.mysql_add_message('уставка ' + str(list_ust_tzp_num[m]) + ' пропущена')
+                mysql_conn.mysql_add_message(f'уставка {list_ust_tzp_num[m]} пропущена')
                 list_delta_t_tzp.append('пропущена')
                 k += 1
                 continue
-            mysql_conn.mysql_ins_result("уставка ТЗП " + str(list_ust_tzp_num[m]), '1')
+            mysql_conn.mysql_ins_result(f'уставка ТЗП {list_ust_tzp_num[m]}', '1')
             if proc.procedure_1_24_34(coef_volt=coef_volt, setpoint_volt=n):
                 pass
             else:
@@ -250,10 +247,9 @@ class TestUBTZ(object):
             stop_timer = time()
             reset.stop_procedure_3()
             calc_delta_t_tzp = stop_timer - start_timer
-            fault.debug_msg("тест 3 delta t \t" + str(calc_delta_t_tzp), 2)
+            fault.debug_msg(f'тест 3 delta t:\t{calc_delta_t_tzp}', 2)
             list_delta_t_tzp.append(calc_delta_t_tzp)
-            mysql_conn.mysql_add_message('уставка ' + str(list_ust_tzp_num[k]) + ' дельта t: '
-                                         + str(round(calc_delta_t_tzp, 0)))
+            mysql_conn.mysql_add_message(f'уставка {list_ust_tzp_num[k]} дельта t: {calc_delta_t_tzp:.0f}')
             in_a1, in_a2, in_a5, in_a6 = self.__inputs_a()
             if in_a1 == False and in_a5 == True and in_a2 == False and in_a6 == True and calc_delta_t_tzp <= 360:
                 if self.__subtest_46():
@@ -309,10 +305,9 @@ class TestUBTZ(object):
             return False
         # 3.2.2.  Проверка срабатывания блока от сигнала нагрузки:
         calc_delta_t_bmz = ctrl_kl.ctrl_ai_code_v0(109)
-        fault.debug_msg("тест 3 delta t \t" + str(calc_delta_t_bmz), 2)
+        fault.debug_msg(f'тест 3 delta t:\t{calc_delta_t_bmz}', 2)
         list_delta_t_bmz[-1] = calc_delta_t_bmz
-        mysql_conn.mysql_add_message('уставка ' + str(list_ust_bmz_num[k]) + ' дельта t: '
-                                     + str(round(calc_delta_t_bmz, 0)))
+        mysql_conn.mysql_add_message(f'уставка {list_ust_bmz_num[k]} дельта t: {calc_delta_t_bmz:.0f}')
         in_a1, in_a2, in_a5, in_a6 = self.__inputs_a()
         if in_a1 == True and in_a5 == False and in_a2 == False and in_a6 == True:
             pass
@@ -417,23 +412,27 @@ class TestUBTZ(object):
         ctrl_kl.ctrl_relay('KL31', False)
         sleep(2)
     
-    def __inputs_a(self):
+    @staticmethod
+    def __inputs_a():
         in_a1 = read_mb.read_discrete(1)
         in_a2 = read_mb.read_discrete(2)
         in_a5 = read_mb.read_discrete(5)
         in_a6 = read_mb.read_discrete(6)
         return in_a1, in_a2, in_a5, in_a6
     
-    def __inputs_b(self):
+    @staticmethod
+    def __inputs_b():
         in_b0 = read_mb.read_discrete(8)
         in_b1 = read_mb.read_discrete(9)
         return in_b0, in_b1
     
-    def __inputs_b1(self):
+    @staticmethod
+    def __inputs_b1():
         in_b1 = read_mb.read_discrete(9)
         return in_b1
     
-    def __inputs_a6(self):
+    @staticmethod
+    def __inputs_a6():
         in_a6 = read_mb.read_discrete(6)
         return in_a6
 
