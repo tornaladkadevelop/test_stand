@@ -50,7 +50,7 @@ class TestBP(object):
         fault.debug_msg("тест 1", 3)
         mb_ctrl.ctrl_relay('KL78', True)
         in_a1, in_a2, in_a6, in_a7 = self.__inputs_a()
-        fault.debug_msg(str(in_a1) + "\t" + str(in_a2) + "\t" + str(in_a6) + "\t" + str(in_a7), 3)
+        fault.debug_msg(f'{in_a1=}\t{in_a2=}\t{in_a6=}\t{in_a7=}', 3)
         if in_a6 == True and in_a1 == False and in_a7 == True and in_a2 == False:
             pass
         else:
@@ -72,7 +72,7 @@ class TestBP(object):
         mb_ctrl.ctrl_relay('KL76', True)
         sleep(5)
         zaryad_1 = read_mb.read_analog_ai2()
-        fault.debug_msg("заряд конденсатора по истечении 5с \t" + str(zaryad_1) + "В", 2)
+        fault.debug_msg(f'заряд конденсатора по истечении 5с:\t{zaryad_1} В', 2)
         if zaryad_1 != 999:
             pass
         else:
@@ -81,7 +81,7 @@ class TestBP(object):
             return False
         sleep(15)
         zaryad_2 = read_mb.read_analog_ai2()
-        fault.debug_msg("заряд конденсатора по истечении 15с \t" + str(zaryad_2) + "В", 2)
+        fault.debug_msg(f'заряд конденсатора по истечении 15с:\t{zaryad_2} В', 2)
         if zaryad_2 != 999:
             pass
         else:
@@ -89,7 +89,7 @@ class TestBP(object):
             fault.debug_msg("тест 2 не пройден", 1)
             return False
         delta_zaryad = zaryad_1 - zaryad_2
-        fault.debug_msg("дельта заряда конденсатора\t" + str(delta_zaryad) + "В", 2)
+        fault.debug_msg(f'дельта заряда конденсатора:\t{delta_zaryad} В', 2)
         if delta_zaryad != 0:
             pass
         else:
@@ -105,14 +105,14 @@ class TestBP(object):
             return False
         # С1=ln(volt1/ volt2)
         emkost_kond = math.log(zaryad_1/zaryad_2)
-        fault.debug_msg("ёмкость\t" + str(emkost_kond), 2)
+        fault.debug_msg(f'ёмкость:\t{emkost_kond}', 2)
         # C1 = t2/C1/31300
         emkost_kond = (15000 / emkost_kond / 31300) * 1000
-        fault.debug_msg("ёмкость\t" + str(emkost_kond), 2)
+        fault.debug_msg(f'ёмкость:\t{emkost_kond}', 2)
         # C1=C1*1000
         # Cd = 100-100*(C1/2000)
         emkost_kond_d = 100 - 100 * (emkost_kond / 2000)
-        fault.debug_msg("ёмкость\t" + str(emkost_kond_d), 2)
+        fault.debug_msg(f'ёмкость:\t{emkost_kond_d}', 2)
         # C1 ≥ 0.8*2000
         if emkost_kond >= 1600:
             pass
@@ -124,7 +124,7 @@ class TestBP(object):
             mb_ctrl.ctrl_relay('KL76', False)
             mb_ctrl.ctrl_relay('KL66', False)
             mb_ctrl.ctrl_relay('KL78', False)
-            mysql_conn.mysql_ins_result("неиспр. емкость снижена на" + str(round(emkost_kond_d, 1)) + "%", "2")
+            mysql_conn.mysql_ins_result(f'неиспр. емкость снижена на {emkost_kond_d:.1f} %', "2")
             fault.debug_msg("тест 2 не пройден", 1)
             return False
         # 2.3. Форсированный разряд
@@ -135,15 +135,15 @@ class TestBP(object):
         mb_ctrl.ctrl_relay('KL79', False)
         sleep(0.3)
         mysql_conn.mysql_ins_result("исправен", "2")
-        mysql_conn.mysql_ins_result(str(round(emkost_kond, 1)), "3")
-        mysql_conn.mysql_ins_result(str(round(emkost_kond_d, 1)), "4")
+        mysql_conn.mysql_ins_result(f'{emkost_kond:.1f}', "3")
+        mysql_conn.mysql_ins_result(f'{emkost_kond_d:.1f}', "4")
         # Тест 3. Проверка работоспособности реле удержания
         mysql_conn.mysql_ins_result("идёт тест 3", "5")
         fault.debug_msg("тест 3", 3)
         mb_ctrl.ctrl_relay('KL75', True)
         sleep(0.3)
         in_a1, in_a2, in_a6, in_a7 = self.__inputs_a()
-        fault.debug_msg(str(in_a1) + "\t" + str(in_a2) + "\t" + str(in_a6) + "\t" + str(in_a7), 3)
+        fault.debug_msg(f'{in_a1=}\t{in_a2=}\t{in_a6=}\t{in_a7=}', 3)
         if in_a6 == False and in_a1 == True and in_a7 == False and in_a2 == True:
             pass
         else:
@@ -169,7 +169,7 @@ class TestBP(object):
         fault.debug_msg("тест 4", 3)
         meas_volt = read_mb.read_analog_ai2()
         calc_volt = meas_volt * (103 / 3)
-        fault.debug_msg("вычисленное напряжение, должно быть больше 6\t" + str(calc_volt), 2)
+        fault.debug_msg(f'вычисленное напряжение, должно быть больше 6\t{calc_volt}', 2)
         if calc_volt >= 6:
             pass
         else:
@@ -196,7 +196,8 @@ class TestBP(object):
         fault.debug_msg("тест 4 пройден", 4)
         return True
     
-    def __inputs_a(self):
+    @staticmethod
+    def __inputs_a():
         in_a1 = read_mb.read_discrete(1)
         in_a2 = read_mb.read_discrete(2)
         in_a6 = read_mb.read_discrete(6)
