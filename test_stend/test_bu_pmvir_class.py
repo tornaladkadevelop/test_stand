@@ -171,7 +171,8 @@ class TestBUPMVIR(object):
             mysql_conn.mysql_error(91)
             return False
     
-    def __inputs_a(self):
+    @staticmethod
+    def __inputs_a():
         in_a1 = read_mb.read_discrete(1)
         return in_a1
 
