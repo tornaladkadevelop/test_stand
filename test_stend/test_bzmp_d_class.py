@@ -66,8 +66,7 @@ class TestBZMPD(object):
         min_volt = 0.6 * meas_volt_ust
         max_volt = 1.0 * meas_volt_ust
         meas_volt = read_mb.read_analog()
-        fault.debug_msg("напряжение после включения KL63\t" + str(meas_volt) + "\tдолжно быть от\t" +
-                        str(min_volt) + "\tдо\t" + str(max_volt), 3)
+        fault.debug_msg(f'напряжение после включения KL63\t{meas_volt}\tдолжно быть от\t{min_volt}\tдо\t{max_volt}', 3)
         if min_volt <= meas_volt <= max_volt:
             pass
         else:
@@ -97,7 +96,7 @@ class TestBZMPD(object):
             mb_ctrl.ctrl_relay('KL24', False)
             timer_test_1 = time() - start_timer_test_1
             in_a1, in_a5, in_a6 = self.__inputs_a()
-            fault.debug_msg('времени прошло \t' + str(timer_test_1), 2)
+            fault.debug_msg(f'времени прошло\t{timer_test_1:.2f}', 2)
             if in_a1 == True and in_a5 == True and in_a6 == False:
                 break
             else:
@@ -288,10 +287,10 @@ class TestBZMPD(object):
             in_a5 = self.__inputs_a5()
             sleep(0.2)
             stop_timer_test_5 = time() - start_timer_test_5
-            fault.debug_msg('таймер тест 5 ' + str(stop_timer_test_5), 2)
+            fault.debug_msg(f'таймер тест 5: {stop_timer_test_5}', 2)
         stop_timer_test_5 = time()
         timer_test_5 = stop_timer_test_5 - start_timer_test_5
-        fault.debug_msg('таймер тест 5 ' + str(timer_test_5), 2)
+        fault.debug_msg(f'таймер тест 5: {timer_test_5}', 2)
         sleep(2)
         mysql_conn.mysql_ins_result('идёт тест 5.2', '5')
         in_a1, in_a5, in_a6 = self.__inputs_a()
@@ -314,7 +313,7 @@ class TestBZMPD(object):
             mysql_conn.mysql_ins_result("неисправен", "5")
             return False
         fault.debug_msg("положение выходов соответствует", 4)
-        mysql_conn.mysql_ins_result("исправен, " + str(round(timer_test_5, 1)) + " сек", "5")
+        mysql_conn.mysql_ins_result(f'исправен, {timer_test_5:.1f} сек', "5")
         return True
     
     def __sbros_zashit(self):
@@ -323,21 +322,25 @@ class TestBZMPD(object):
         mb_ctrl.ctrl_relay('KL24', False)
         sleep(0.7)
     
-    def __inputs_a(self):
+    @staticmethod
+    def __inputs_a():
         in_a1 = read_mb.read_discrete(1)
         in_a5 = read_mb.read_discrete(5)
         in_a6 = read_mb.read_discrete(6)
         return in_a1, in_a5, in_a6
     
-    def __inputs_a5(self):
+    @staticmethod
+    def __inputs_a5():
         in_a5 = read_mb.read_discrete(5)
         return in_a5
 
-    def __inputs_a6(self):
+    @staticmethod
+    def __inputs_a6():
         in_a6 = read_mb.read_discrete(6)
         return in_a6
     
-    def __inputs_b(self):
+    @staticmethod
+    def __inputs_b():
         in_a9 = read_mb.read_discrete(9)
         return in_a9
 
