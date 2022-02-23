@@ -327,9 +327,9 @@ class ReadMB(object):
         :return:
         """
         analog_max_code = 27648.0
-        analog_min_code = 0
+        # analog_min_code = 0
         analog_max = 400
-        analog_min = 0
+        # analog_min = 0
         analog_tags_value = []
         analog_tags_value.append(opc.list('AI.AI')[0])
         val = opc.read(analog_tags_value, update=1, include_error=True)
@@ -339,8 +339,9 @@ class ReadMB(object):
         if list_str[2] == "'Good'":
             analog_inp_fl = float(list_str[1])
             # meas_volt = analog_inp_fl / 69.12
-            meas_volt = ((analog_inp_fl - analog_min_code) * (analog_max - analog_min)) / \
-                        (analog_max_code - analog_min_code) + analog_min
+            # meas_volt = ((analog_inp_fl - analog_min_code) * (analog_max - analog_min)) / \
+            #             (analog_max_code - analog_min_code) + analog_min
+            meas_volt = analog_inp_fl * analog_max / analog_max_code
             return meas_volt
         else:
             return 999
