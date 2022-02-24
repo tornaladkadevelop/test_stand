@@ -299,6 +299,9 @@ class TestBDU1M(object):
         return in_a1, in_a2
 
     def st_test_bdu_1m(self):
+        """
+            главная функция которая собирает все остальные
+        """
         if self.st_test_1_bdu_1m():
             if self.st_test_20_bdu_1m():
                 if self.st_test_22_bdu_1m():
