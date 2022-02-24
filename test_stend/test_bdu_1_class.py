@@ -21,7 +21,6 @@ __all__ = ["TestBDU1"]
 
 class TestBDU1(object):
 
-    __reset = ResetRelay()
     __resist = Resistor()
     __ctrl_kl = CtrlKL()
     __read_mb = ReadMB()
