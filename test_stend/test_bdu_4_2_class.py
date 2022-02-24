@@ -252,7 +252,7 @@ class TestBDU42(object):
             self.__fault.debug_msg(f'нет связи с контроллером', 1)
         return in_a1, in_a2
 
-    def st_test_bdu_4_2(self):
+    def st_test_bdu_4_2(self) -> bool:
         """
             главная функция которая собирает все остальные
         """
