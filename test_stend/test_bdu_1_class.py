@@ -31,7 +31,7 @@ class TestBDU1(object):
     def __init__(self):
         pass
     
-    def st_test_1_bdu_1(self):
+    def st_test_1_bdu_1(self) -> bool:
         """
             Тест 1. Проверка исходного состояния блока
         """
@@ -46,7 +46,7 @@ class TestBDU1(object):
         self.__fault.debug_msg(f'{in_a1=} \tтест 1 пройден', 3)
         return True
 
-    def st_test_20_bdu_1(self):
+    def st_test_20_bdu_1(self) -> bool:
         """
             Тест-2 Проверка включения/отключения блока от кнопки пуск
         """
@@ -62,7 +62,7 @@ class TestBDU1(object):
         self.__fault.debug_msg(f'{in_a1=} \tтест 2.1 пройден', 3)
         return True
 
-    def st_test_22_bdu_1(self):
+    def st_test_22_bdu_1(self) -> bool:
         """
             Тест-2.2 Проверка канала блока от кнопки "Пуск"
         """
@@ -80,7 +80,7 @@ class TestBDU1(object):
         self.__fault.debug_msg(f'{in_a1=} \tтест 2.2 пройден', 3)
         return True
 
-    def st_test_23_bdu_1(self):
+    def st_test_23_bdu_1(self) -> bool:
         """
             Тест 2.3 Выключение канала блока от кнопки «Пуск» при сопротивлении 10 Ом
         """
@@ -98,7 +98,7 @@ class TestBDU1(object):
         self.__mysql_conn.mysql_ins_result('исправен', '2')
         return True
 
-    def st_test_30_bdu_1(self):
+    def st_test_30_bdu_1(self) -> bool:
         # Тест-3. Удержание исполнительного элемента при сопротивлении цепи заземления до 35 Ом
         sleep(3)
         self.__ctrl_kl.ctrl_relay('KL12', True)
@@ -118,7 +118,7 @@ class TestBDU1(object):
         self.__mysql_conn.mysql_ins_result('исправен', '3')
         return True
 
-    def st_test_40_bdu_1(self):
+    def st_test_40_bdu_1(self) -> bool:
         """
             Тест 4. Отключение исполнительного элемента при сопротивлении цепи заземления свыше 50 Ом
         """
@@ -141,7 +141,7 @@ class TestBDU1(object):
         sleep(0.5)
         return True
 
-    def st_test_50_bdu_1(self):
+    def st_test_50_bdu_1(self) -> bool:
         """
             Тест 5. Защита от потери управляемости при замыкании проводов ДУ
         """
@@ -165,7 +165,7 @@ class TestBDU1(object):
         self.__ctrl_kl.ctrl_relay('KL1', False)
         return True
 
-    def st_test_60_bdu_1(self):
+    def st_test_60_bdu_1(self) -> bool:
         """
             Тест 6. Защита от потери управляемости при обрыве проводов ДУ
         """
@@ -187,40 +187,44 @@ class TestBDU1(object):
         self.__fault.debug_msg(f'{in_a1=} \tтест завершен', 3)
         return True
     
-    def __inputs_a(self):
+    def __inputs_a(self) -> bool:
         in_a1 = self.__read_mb.read_discrete(1)
         if in_a1 is None:
             self.__fault.debug_msg(f'нет связи с контроллером', 1)
         return in_a1
 
-    def st_test_bdu_1(self):
+    def st_test_bdu_1(self) -> bool:
         """
             главная функция которая собирает все остальные
         """
-        __test_1 = self.st_test_1_bdu_1()
-        __test_20 = self.st_test_20_bdu_1()
-        __test_22 = self.st_test_22_bdu_1()
-        __test_23 = self.st_test_23_bdu_1()
-        __test_3 = self.st_test_30_bdu_1()
-        __test_4 = self.st_test_40_bdu_1()
-        __test_5 = self.st_test_50_bdu_1()
-        __test_6 = self.st_test_60_bdu_1()
-        if __test_1 and __test_20 and __test_22 and __test_23 and __test_3 and __test_4 and __test_5 and __test_6:
-            self.__mysql_conn.mysql_block_good()
-            my_msg('Блок исправен')
-        else:
-            self.__mysql_conn.mysql_block_bad()
-            my_msg('Блок неисправен')
-        self.__reset.reset_all()
+        if self.st_test_1_bdu_1():
+            if self.st_test_20_bdu_1():
+                if self.st_test_22_bdu_1():
+                    if self.st_test_23_bdu_1():
+                        if self.st_test_23_bdu_1():
+                            if self.st_test_30_bdu_1():
+                                if self.st_test_40_bdu_1():
+                                    if self.st_test_50_bdu_1():
+                                        if self.st_test_60_bdu_1():
+                                            return True
+        return False
 
 
 if __name__ == '__main__':
+    test_bdu_1 = TestBDU1()
+    reset_test_bdu_1 = ResetRelay()
+    mysql_conn_bdu_1 = MySQLConnect()
     try:
-        test_bdu_1 = TestBDU1()
-        test_bdu_1.st_test_bdu_1()
+        if test_bdu_1.st_test_bdu_1():
+            mysql_conn_bdu_1.mysql_block_good()
+            my_msg('Блок исправен')
+        else:
+            mysql_conn_bdu_1.mysql_block_bad()
+            my_msg('Блок неисправен')
     except OSError:
         my_msg("ошибка системы")
     except SystemError:
         my_msg("внутренняя ошибка")
     finally:
+        reset_test_bdu_1.reset_all()
         exit()
