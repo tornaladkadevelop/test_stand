@@ -18,258 +18,361 @@ from gen_mysql_connect import *
 
 __all__ = ["TestBDURT"]
 
-reset = ResetRelay()
-resist = Resistor()
-ctrl_kl = CtrlKL()
-read_mb = ReadMB()
-mysql_conn = MySQLConnect()
-fault = Bug(True)
-
 
 class TestBDURT(object):
+
+    __resist = Resistor()
+    __ctrl_kl = CtrlKL()
+    __read_mb = ReadMB()
+    __mysql_conn = MySQLConnect()
+    __fault = Bug(None)
+
     def __init__(self):
         pass
 
-    def st_test_bdu_r_t(self):
-        # reset.reset_all()
-        mysql_conn.mysql_ins_result("идет тест 1", '1')
+    def st_test_1_bdu_r_t(self) -> bool:
+        self.__mysql_conn.mysql_ins_result("идет тест 1", '1')
         in_a1, in_a2 = self.__inputs_a()
-        if in_a1 == False and in_a2 == False:
+        if in_a1 is False and in_a2 is False:
             pass
         else:
-            mysql_conn.mysql_ins_result("неисправен", '1')
-            if in_a1 == True:
-                mysql_conn.mysql_error(288)
-            elif in_a2 == True:
-                mysql_conn.mysql_error(288)
+            self.__mysql_conn.mysql_ins_result("неисправен", '1')
+            if in_a1 is True:
+                self.__mysql_conn.mysql_error(288)
+            elif in_a2 is True:
+                self.__mysql_conn.mysql_error(288)
             return False
-        mysql_conn.mysql_ins_result("исправен", "1")
-        # Тест 2. Проверка включения/выключения блока от кнопки «Пуск/Стоп» в режиме «Вперед».
-        mysql_conn.mysql_ins_result("идет тест 2", '2')
-        ctrl_kl.ctrl_relay('KL2', True)
+        self.__mysql_conn.mysql_ins_result("исправен", "1")
+        return True
+
+    def st_test_20_bdu_r_t(self) -> bool:
+        """
+        Тест 2. Проверка включения/выключения блока от кнопки «Пуск/Стоп» в режиме «Вперед».
+        """
+        self.__mysql_conn.mysql_ins_result("идет тест 2", '2')
+        self.__ctrl_kl.ctrl_relay('KL2', True)
         sleep(1)
         in_a1, in_a2 = self.__inputs_a()
-        if in_a1 == False and in_a2 == False:
+        if in_a1 is False and in_a2 is False:
             pass
         else:
-            mysql_conn.mysql_ins_result("неисправен", '2')
-            if  in_a1 == True:
-                mysql_conn.mysql_error(290)
-            elif in_a2 == True:
-                mysql_conn.mysql_error(291)
+            self.__mysql_conn.mysql_ins_result("неисправен", '2')
+            if in_a1 is True:
+                self.__mysql_conn.mysql_error(290)
+            elif in_a2 is True:
+                self.__mysql_conn.mysql_error(291)
             return False
-        # 2.2. Включение блока от кнопки «Пуск» в режиме «Вперёд»
-        # 2.3. Проверка удержания блока во включенном состоянии при подключении Rш пульта управления:
-        mysql_conn.mysql_ins_result("идет тест 2.2", '2')
-        if self.__subtest_22_23():
-            pass
-        else:
-            mysql_conn.mysql_ins_result("неисправен", '2')
-            return False
-        # 2.4. Выключение блока в режиме «Вперед» от кнопки «Стоп»
-        mysql_conn.mysql_ins_result("идет тест 2.4", '2')
-        ctrl_kl.ctrl_relay('KL12', False)
+        return True
+
+    def st_test_21_bdu_r_t(self) -> bool:
+        """
+        2.2. Включение блока от кнопки «Пуск» в режиме «Вперёд»
+        2.3. Проверка удержания блока во включенном состоянии при подключении Rш пульта управления:
+        """
+        if self.__subtest_22(2.2, 2):
+            if self.__subtest_23(2.3, 2):
+                return True
+        return False
+
+    def st_test_22_bdu_r_t(self) -> bool:
+        """
+        2.4. Выключение блока в режиме «Вперед» от кнопки «Стоп»
+        """
+        self.__mysql_conn.mysql_ins_result("идет тест 2.4", '2')
+        self.__ctrl_kl.ctrl_relay('KL12', False)
         sleep(1)
         in_a1, in_a2 = self.__inputs_a()
-        if in_a1 == False and in_a2 == False:
+        if in_a1 is False and in_a2 is False:
             pass
         else:
-            mysql_conn.mysql_ins_result("неисправен", '2')
-            if in_a1 == True:
-                mysql_conn.mysql_error(296)
-            elif in_a2 == True:
-                mysql_conn.mysql_error(297)
+            self.__mysql_conn.mysql_ins_result("неисправен", '2')
+            if in_a1 is True:
+                self.__mysql_conn.mysql_error(296)
+            elif in_a2 is True:
+                self.__mysql_conn.mysql_error(297)
             return False
-        ctrl_kl.ctrl_relay('KL25', False)
-        ctrl_kl.ctrl_relay('KL1', False)
-        mysql_conn.mysql_ins_result("исправен", '2')
-        # Тест 3. Проверка включения/выключения блока от кнопки «Пуск/Стоп» в режиме «Назад»
-        # 3.1. Включение блока от кнопки «Пуск» в режиме «Назад»
-        mysql_conn.mysql_ins_result("идет тест 3", '3')
-        ctrl_kl.ctrl_relay('KL26', True)
-        resist.resist_ohm(10)
-        ctrl_kl.ctrl_relay('KL12', True)
+        self.__ctrl_kl.ctrl_relay('KL25', False)
+        self.__ctrl_kl.ctrl_relay('KL1', False)
+        self.__mysql_conn.mysql_ins_result("исправен", '2')
+        return True
+
+    def st_test_30_bdu_r_t(self) -> bool:
+        """
+        Тест 3. Проверка включения/выключения блока от кнопки «Пуск/Стоп» в режиме «Назад»
+        3.1. Включение блока от кнопки «Пуск» в режиме «Назад»
+        """
+        self.__mysql_conn.mysql_ins_result("идет тест 3.1", '3')
+        self.__ctrl_kl.ctrl_relay('KL26', True)
+        self.__resist.resist_ohm(10)
+        self.__ctrl_kl.ctrl_relay('KL12', True)
         sleep(1)
         in_a1, in_a2 = self.__inputs_a()
-        if in_a1 == False and in_a2 == True:
+        if in_a1 is False and in_a2 is True:
             pass
         else:
-            mysql_conn.mysql_ins_result("неисправен", '3')
-            if in_a1 == True:
-                mysql_conn.mysql_error(298)
-            elif in_a2 == False:
-                mysql_conn.mysql_error(299)
+            self.__mysql_conn.mysql_ins_result("неисправен", '3')
+            if in_a1 is True:
+                self.__mysql_conn.mysql_error(298)
+            elif in_a2 is False:
+                self.__mysql_conn.mysql_error(299)
             return False
-        # 3.2. Проверка удержания контактов К5.2 режима «Назад» блока во включенном состоянии
-        # при подключении Rш пульта управления:
-        mysql_conn.mysql_ins_result("идет тест 3.2", '3')
-        ctrl_kl.ctrl_relay('KL27', True)
-        ctrl_kl.ctrl_relay('KL1', True)
-        ctrl_kl.ctrl_relay('KL25', True)
+        return True
+
+    def st_test_31_bdu_r_t(self) -> bool:
+        """
+        3.2. Проверка удержания контактов К5.2 режима «Назад» блока во включенном состоянии
+        при подключении Rш пульта управления:
+        """
+        self.__mysql_conn.mysql_ins_result("идет тест 3.2", '3')
+        self.__ctrl_kl.ctrl_relay('KL27', True)
+        self.__ctrl_kl.ctrl_relay('KL1', True)
+        self.__ctrl_kl.ctrl_relay('KL25', True)
         sleep(1)
         in_a1, in_a2 = self.__inputs_a()
-        if in_a1 == True and in_a2 == False:
+        if in_a1 is True and in_a2 is False:
             pass
         else:
-            mysql_conn.mysql_ins_result("неисправен", '3')
-            if in_a1 == False:
-                mysql_conn.mysql_error(300)
-            elif in_a2 == True:
-                mysql_conn.mysql_error(301)
+            self.__mysql_conn.mysql_ins_result("неисправен", '3')
+            if in_a1 is False:
+                self.__mysql_conn.mysql_error(300)
+            elif in_a2 is True:
+                self.__mysql_conn.mysql_error(301)
             return False
-        # 3.3. Выключение блока в режиме «Вперед» от кнопки «Стоп»
-        mysql_conn.mysql_ins_result("идет тест 3.3", '3')
-        ctrl_kl.ctrl_relay('KL12', False)
+        return True
+
+    def st_test_32_bdu_r_t(self) -> bool:
+        """
+        3.3. Выключение блока в режиме «Вперед» от кнопки «Стоп»
+        """
+        self.__mysql_conn.mysql_ins_result("идет тест 3.3", '3')
+        self.__ctrl_kl.ctrl_relay('KL12', False)
         sleep(1)
         in_a1, in_a2 = self.__inputs_a()
-        if in_a1 == False and in_a2 == False:
+        if in_a1 is False and in_a2 is False:
             pass
         else:
-            mysql_conn.mysql_ins_result("неисправен", '3')
-            if in_a1 == True:
-                mysql_conn.mysql_error(302)
-            elif in_a2 == True:
-                mysql_conn.mysql_error(303)
+            self.__mysql_conn.mysql_ins_result("неисправен", '3')
+            if in_a1 is True:
+                self.__mysql_conn.mysql_error(302)
+            elif in_a2 is True:
+                self.__mysql_conn.mysql_error(303)
             return False
-        ctrl_kl.ctrl_relay('KL26', False)
-        ctrl_kl.ctrl_relay('KL27', False)
-        ctrl_kl.ctrl_relay('KL1', False)
-        ctrl_kl.ctrl_relay('KL25', False)
-        mysql_conn.mysql_ins_result("исправен", '3')
+        self.__ctrl_kl.ctrl_relay('KL26', False)
+        self.__ctrl_kl.ctrl_relay('KL27', False)
+        self.__ctrl_kl.ctrl_relay('KL1', False)
+        self.__ctrl_kl.ctrl_relay('KL25', False)
+        self.__mysql_conn.mysql_ins_result("исправен", '3')
+        return True
+
+    def st_test_40_bdu_r_t(self) -> bool:
+        """
+        Повторяем тест 2.2. Включение блока от кнопки «Пуск» в режиме «Вперёд»
+        Повторяем тест 2.3. Проверка удержания блока во включенном состоянии при подключении Rш пульта управления:
+        """
+        if self.__subtest_22(4.1, 4):
+            if self.__subtest_23(4.2, 4):
+                return True
+        return False
+
+    def st_test_41_bdu_r_t(self) -> bool:
+        """
         # 4. Отключение исполнительного элемента при увеличении сопротивления цепи заземления на величину свыше 50 Ом
-        mysql_conn.mysql_ins_result("идет тест 4", '4')
-        if self.__subtest_22_23():
-            pass
-        else:
-            mysql_conn.mysql_ins_result("неисправен", '4')
-            return False
-        resist.resist_10_to_50_ohm()
+        """
+        self.__mysql_conn.mysql_ins_result("идет тест 4.3", '4')
+        self.__resist.resist_10_to_50_ohm()
         sleep(1)
         in_a1, in_a2 = self.__inputs_a()
-        if in_a1 == False and in_a2 == False:
+        if in_a1 is False and in_a2 is False:
             pass
         else:
-            mysql_conn.mysql_ins_result("неисправен", '4')
-            if in_a1 == True:
-                mysql_conn.mysql_error(304)
-            elif in_a2 == True:
-                mysql_conn.mysql_error(305)
+            self.__mysql_conn.mysql_ins_result("неисправен", '4')
+            if in_a1 is True:
+                self.__mysql_conn.mysql_error(304)
+            elif in_a2 is True:
+                self.__mysql_conn.mysql_error(305)
             return False
-        ctrl_kl.ctrl_relay('KL12', False)
-        ctrl_kl.ctrl_relay('KL25', False)
-        ctrl_kl.ctrl_relay('KL1', False)
-        mysql_conn.mysql_ins_result("исправен", '4')
+        self.__ctrl_kl.ctrl_relay('KL12', False)
+        self.__ctrl_kl.ctrl_relay('KL25', False)
+        self.__ctrl_kl.ctrl_relay('KL1', False)
+        self.__mysql_conn.mysql_ins_result("исправен", '4')
+        return True
+
+    def st_test_50_bdu_r_t(self) -> bool:
+        """
+        Повторяем тест 2.2. Включение блока от кнопки «Пуск» в режиме «Вперёд»
+        Повторяем тест 2.3. Проверка удержания блока во включенном состоянии при подключении Rш пульта управления:
+        """
+        if self.__subtest_22(5.1, 5):
+            if self.__subtest_23(5.2, 5):
+                return True
+        return False
+
+    def st_test_51_bdu_r_t(self) -> bool:
+        """
         # 5. Защита от потери управляемости при замыкании проводов ДУ
-        mysql_conn.mysql_ins_result("идет тест 5", '5')
-        if self.__subtest_22_23():
-            pass
-        else:
-            mysql_conn.mysql_ins_result("неисправен", '5')
-            return False
-        ctrl_kl.ctrl_relay('KL11', True)
+        """
+        self.__mysql_conn.mysql_ins_result("идет тест 5.3", '5')
+        self.__ctrl_kl.ctrl_relay('KL11', True)
         sleep(1)
         in_a1, in_a2 = self.__inputs_a()
-        if in_a1 == False and in_a2 == False:
+        if in_a1 is False and in_a2 is False:
             pass
         else:
-            mysql_conn.mysql_ins_result("неисправен", '5')
-            if in_a1 == True:
-                mysql_conn.mysql_error(306)
-            elif in_a2 == True:
-                mysql_conn.mysql_error(307)
+            self.__mysql_conn.mysql_ins_result("неисправен", '5')
+            if in_a1 is True:
+                self.__mysql_conn.mysql_error(306)
+            elif in_a2 is True:
+                self.__mysql_conn.mysql_error(307)
             return False
-        ctrl_kl.ctrl_relay('KL12', False)
-        ctrl_kl.ctrl_relay('KL1', False)
-        ctrl_kl.ctrl_relay('KL25', False)
-        ctrl_kl.ctrl_relay('KL11', False)
-        mysql_conn.mysql_ins_result("исправен", '5')
+        self.__ctrl_kl.ctrl_relay('KL12', False)
+        self.__ctrl_kl.ctrl_relay('KL1', False)
+        self.__ctrl_kl.ctrl_relay('KL25', False)
+        self.__ctrl_kl.ctrl_relay('KL11', False)
+        self.__mysql_conn.mysql_ins_result("исправен", '5')
+        return True
+
+    def st_test_60_bdu_r_t(self) -> bool:
+        """
+        Повторяем тест 2.2. Включение блока от кнопки «Пуск» в режиме «Вперёд»
+        Повторяем тест 2.3. Проверка удержания блока во включенном состоянии при подключении Rш пульта управления:
+        """
+        if self.__subtest_22(6.1, 6):
+            if self.__subtest_23(6.2, 6):
+                return True
+        return False
+
+    def st_test_61_bdu_r_t(self) -> bool:
+        """
         # Тест 6. Защита от потери управляемости при обрыве проводов ДУ
-        mysql_conn.mysql_ins_result("идет тест 6", '6')
-        if self.__subtest_22_23():
-            pass
-        else:
-            mysql_conn.mysql_ins_result("неисправен", '6')
-            return False
-        ctrl_kl.ctrl_relay('KL12', False)
+        """
+        self.__mysql_conn.mysql_ins_result("идет тест 6.3", '6')
+        self.__ctrl_kl.ctrl_relay('KL12', False)
         sleep(1)
         in_a1, in_a2 = self.__inputs_a()
-        if in_a1 == False and in_a2 == False:
+        if in_a1 is False and in_a2 is False:
             pass
         else:
-            mysql_conn.mysql_ins_result("неисправен", '6')
-            if in_a1 == True:
-                mysql_conn.mysql_error(308)
-            elif in_a2 == True:
-                mysql_conn.mysql_error(309)
+            self.__mysql_conn.mysql_ins_result("неисправен", '6')
+            if in_a1 is True:
+                self.__mysql_conn.mysql_error(308)
+            elif in_a2 is True:
+                self.__mysql_conn.mysql_error(309)
             return False
-        mysql_conn.mysql_ins_result("исправен", '6')
+        self.__mysql_conn.mysql_ins_result("исправен", '6')
+        return True
+
+    def st_test_70_bdu_r_t(self) -> bool:
+        """
         # Тест 7. Проверка работоспособности функции "Проверка" блока
-        mysql_conn.mysql_ins_result("идет тест 7", '7')
-        ctrl_kl.ctrl_relay('KL24', True)
+        """
+        self.__mysql_conn.mysql_ins_result("идет тест 7", '7')
+        self.__ctrl_kl.ctrl_relay('KL24', True)
         sleep(1)
         in_a1, in_a2 = self.__inputs_a()
-        if in_a1 == False and in_a2 == True:
+        if in_a1 is False and in_a2 is True:
             pass
         else:
-            mysql_conn.mysql_ins_result("неисправен", '7')
-            if in_a1 == True:
-                mysql_conn.mysql_error(310)
-            elif in_a2 == False:
-                mysql_conn.mysql_error(311)
+            self.__mysql_conn.mysql_ins_result("неисправен", '7')
+            if in_a1 is True:
+                self.__mysql_conn.mysql_error(310)
+            elif in_a2 is False:
+                self.__mysql_conn.mysql_error(311)
             return False
-        mysql_conn.mysql_ins_result("исправен", '7')
+        self.__mysql_conn.mysql_ins_result("исправен", '7')
         return True
 
-    def __subtest_22_23(self):
+    def __subtest_22(self, subtest_2_num: float, test_2_num: int) -> bool:
+        """
         # 2.2. Включение блока от кнопки «Пуск»
-        resist.resist_ohm(10)
-        ctrl_kl.ctrl_relay('KL12', True)
+        """
+        self.__mysql_conn.mysql_ins_result(f'идёт тест {subtest_2_num}', f'{test_2_num}')
+        self.__resist.resist_ohm(10)
+        self.__ctrl_kl.ctrl_relay('KL12', True)
         sleep(1)
         in_a1, in_a2 = self.__inputs_a()
-        if in_a1 == True and in_a2 == False:
+        if in_a1 is True and in_a2 is False:
             pass
         else:
-            if in_a1 == False:
-                mysql_conn.mysql_error(292)
-            elif in_a2 == True:
-                mysql_conn.mysql_error(293)
+            self.__mysql_conn.mysql_ins_result("неисправен", f'{test_2_num}')
+            self.__fault.debug_msg(f'тест {subtest_2_num} положение выходов не соответствует', 1)
+            if in_a1 is False:
+                self.__mysql_conn.mysql_error(292)
+            elif in_a2 is True:
+                self.__mysql_conn.mysql_error(293)
             return False
-        # 2.3. Проверка удержания блока во включенном состоянии при подключении Rш пульта управления:
-        ctrl_kl.ctrl_relay('KL1', True)
-        ctrl_kl.ctrl_relay('KL25', True)
-        sleep(1)
-        in_a1, in_a2 = self.__inputs_a()
-        if in_a1 == True and in_a2 == False:
-            pass
-        else:
-            if in_a1 == False:
-                mysql_conn.mysql_error(294)
-            elif in_a2 == False:
-                mysql_conn.mysql_error(295)
-            return False
+        self.__fault.debug_msg(f'тест {subtest_2_num} положение выходов соответствует', 4)
         return True
 
-    @staticmethod
-    def __inputs_a():
-        in_a1 = read_mb.read_discrete(1)
-        in_a2 = read_mb.read_discrete(2)
+    def __subtest_23(self, subtest_3_num: float, test_3_num: int) -> bool:
+        """
+        2.3. Проверка удержания блока во включенном состоянии при подключении Rш пульта управления:
+        """
+        self.__mysql_conn.mysql_ins_result(f'идёт тест {subtest_3_num}', f'{test_3_num}')
+        self.__ctrl_kl.ctrl_relay('KL1', True)
+        self.__ctrl_kl.ctrl_relay('KL25', True)
+        sleep(1)
+        in_a1, in_a2 = self.__inputs_a()
+        if in_a1 is True and in_a2 is False:
+            pass
+        else:
+            self.__mysql_conn.mysql_ins_result("неисправен", f'{test_3_num}')
+            self.__fault.debug_msg(f'тест {subtest_3_num} положение выходов не соответствует', 1)
+            if in_a1 is False:
+                self.__mysql_conn.mysql_error(294)
+            elif in_a2 is False:
+                self.__mysql_conn.mysql_error(295)
+            return False
+        self.__fault.debug_msg(f'тест {subtest_3_num} положение выходов соответствует', 4)
+        return True
+
+    def __inputs_a(self):
+        in_a1 = self.__read_mb.read_discrete(1)
+        in_a2 = self.__read_mb.read_discrete(2)
+        if in_a1 is None or in_a2 is None:
+            raise ModbusConnectException(f'нет связи с контроллером')
         return in_a1, in_a2
+
+    def st_test_bdu_r_t(self) -> bool:
+        """
+        Главная функция которая собирает все остальные
+        """
+        if self.st_test_1_bdu_r_t():
+            if self.st_test_20_bdu_r_t():
+                if self.st_test_21_bdu_r_t():
+                    if self.st_test_22_bdu_r_t():
+                        if self.st_test_30_bdu_r_t():
+                            if self.st_test_31_bdu_r_t():
+                                if self.st_test_32_bdu_r_t():
+                                    if self.st_test_40_bdu_r_t():
+                                        if self.st_test_41_bdu_r_t():
+                                            if self.st_test_50_bdu_r_t():
+                                                if self.st_test_51_bdu_r_t():
+                                                    if self.st_test_60_bdu_r_t():
+                                                        if self.st_test_61_bdu_r_t():
+                                                            if self.st_test_70_bdu_r_t():
+                                                                return True
+        return False
 
 
 if __name__ == '__main__':
+    test_bdu_r_t = TestBDURT()
+    reset_test_bdu_r_t = ResetRelay()
+    mysql_conn_bdu_r_t = MySQLConnect()
+    fault = Bug(True)
     try:
-        test_bdu_r_t = TestBDURT()
         if test_bdu_r_t.st_test_bdu_r_t():
-            mysql_conn.mysql_block_good()
+            mysql_conn_bdu_r_t.mysql_block_good()
             my_msg('Блок исправен')
         else:
-            mysql_conn.mysql_block_bad()
-            my_msg('Блок неисправен')
+            mysql_conn_bdu_r_t.mysql_block_bad()
+            my_msg('Блок неисправен', '#A61E1E')
     except OSError:
         my_msg("ошибка системы")
     except SystemError:
         my_msg("внутренняя ошибка")
+    except ModbusConnectException as mce:
+        fault.debug_msg(mce, 1)
+        my_msg(str(mce), '#A61E1E')
     finally:
-        reset.reset_all()
+        reset_test_bdu_r_t.reset_all()
         exit()
-
