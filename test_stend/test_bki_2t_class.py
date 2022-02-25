@@ -19,162 +19,194 @@ from gen_mysql_connect import *
 
 __all__ = ["TestBKI2T"]
 
-reset = ResetRelay()
-resist = Resistor()
-result = Result()
-ctrl_kl = CtrlKL()
-read_mb = ReadMB()
-mysql_conn = MySQLConnect()
-fault = Bug(None)
-
 
 class TestBKI2T(object):
+
+    __resist = Resistor()
+    __ctrl_kl = CtrlKL()
+    __read_mb = ReadMB()
+    __mysql_conn = MySQLConnect()
+    __fault = Bug(None)
+
     def __init__(self):
         pass
     
-    def st_test_bki_2t(self):
-        # reset.reset_all()
-        # Тест 1. Проверка исходного состояния блока:
-        mysql_conn.mysql_ins_result("идет тест 1", "1")
+    def st_test_1_bki_2t(self) -> bool:
+        """
+        Тест 1. Проверка исходного состояния блока:
+        """
+        self.__mysql_conn.mysql_ins_result("идет тест 1", "1")
         in_a1, in_a2, in_a5, in_a6 = self.__inputs_a()
-        if in_a5 == True and in_a1 == False and in_a6 == True and in_a2 == False:
+        if in_a5 is True and in_a1 is False and in_a6 is True and in_a2 is False:
             pass
         else:
-            mysql_conn.mysql_ins_result("неисправен", "1")
-            fault.debug_msg('тест 1 не пройден', 1)
-            if in_a5 == False or in_a1 == True:
-                mysql_conn.mysql_error(35)
-            elif in_a6 == False or in_a2 == True:
-                mysql_conn.mysql_error(36)
+            self.__mysql_conn.mysql_ins_result("неисправен", "1")
+            self.__fault.debug_msg('тест 1 не пройден', 1)
+            if in_a5 is False or in_a1 is True:
+                self.__mysql_conn.mysql_error(35)
+            elif in_a6 is False or in_a2 is True:
+                self.__mysql_conn.mysql_error(36)
             return False
-        fault.debug_msg('тест 1 пройден', 3)
-        mysql_conn.mysql_ins_result("исправен", '1')
-        # Тест 2. Проверка работы блока при подаче питания и при
-        # нормальном сопротивлении изоляции контролируемого присоединения
-        mysql_conn.mysql_ins_result("идет тест 2", "2")
-        ctrl_kl.ctrl_relay('KL21', True)
+        self.__fault.debug_msg('тест 1 пройден', 3)
+        self.__mysql_conn.mysql_ins_result("исправен", '1')
+        return True
+
+    def st_test_20_bki_2t(self) -> bool:
+        """
+        Тест 2. Проверка работы блока при подаче питания и при
+        нормальном сопротивлении изоляции контролируемого присоединения
+        """
+        self.__mysql_conn.mysql_ins_result("идет тест 2.1", "2")
+        self.__ctrl_kl.ctrl_relay('KL21', True)
         sleep(5)
-        if self.__subtest_21():
+        if self.__subtest_21(2.2, 2):
             pass
         else:
-            mysql_conn.mysql_ins_result("неисправен", '2')
-            fault.debug_msg('тест 2.1 не пройден', 1)
+            self.__mysql_conn.mysql_ins_result("неисправен", '2')
             return False
-        fault.debug_msg('тест 2.1 пройден', 3)
-        mysql_conn.mysql_ins_result("исправен", '2')
-        # Тест 3. Проверка работы 1 канала (К1) блока при снижении
-        # уровня сопротивлении изоляции ниже 30 кОм в цепи 1 канала
-        mysql_conn.mysql_ins_result("идет тест 3", "3")
-        ctrl_kl.ctrl_relay('KL31', True)
-        resist.resist_kohm(12)
+        self.__mysql_conn.mysql_ins_result("исправен", '2')
+        return True
+
+    def st_test_30_bki_2t(self) -> bool:
+        """
+        Тест 3. Проверка работы 1 канала (К1) блока при снижении
+        уровня сопротивлении изоляции ниже 30 кОм в цепи 1 канала
+        """
+        self.__mysql_conn.mysql_ins_result("идет тест 3", "3")
+        self.__ctrl_kl.ctrl_relay('KL31', True)
+        self.__resist.resist_kohm(12)
         in_a1, in_a2, in_a5, in_a6 = self.__inputs_a()
-        if in_a5 == False and in_a1 == True and in_a6 == True and in_a2 == False:
+        if in_a5 is False and in_a1 is True and in_a6 is True and in_a2 is False:
             pass
         else:
-            mysql_conn.mysql_ins_result("неисправен", '3')
-            if in_a5 == True or in_a1 == False:
-                mysql_conn.mysql_error(39)
-            elif in_a6 == False or in_a2 == True:
-                mysql_conn.mysql_error(40)
+            self.__mysql_conn.mysql_ins_result("неисправен", '3')
+            if in_a5 is True or in_a1 is False:
+                self.__mysql_conn.mysql_error(39)
+            elif in_a6 is False or in_a2 is True:
+                self.__mysql_conn.mysql_error(40)
             return False
-        resist.resist_kohm(590)
-        mysql_conn.mysql_ins_result("исправен", '3')
-        # Тест 4. Проверка работы 1 канала (К1) блока от кнопки «Проверка БКИ» в цепи 1 канала
-        mysql_conn.mysql_ins_result("идет тест 4", "4")
-        if self.__subtest_21():
+        self.__resist.resist_kohm(590)
+        self.__mysql_conn.mysql_ins_result("исправен", '3')
+        return True
+
+    def st_test_40_bki_2t(self) -> bool:
+        """
+        Тест 4. Проверка работы 1 канала (К1) блока от кнопки «Проверка БКИ» в цепи 1 канала
+        """
+        if self.__subtest_21(4.1, 4):
             pass
         else:
-            mysql_conn.mysql_ins_result("неисправен", '4')
+            self.__mysql_conn.mysql_ins_result("неисправен", '4')
             return False
-        ctrl_kl.ctrl_relay('KL23', True)
-        ctrl_kl.ctrl_relay('KL22', True)
+        self.__ctrl_kl.ctrl_relay('KL23', True)
+        self.__ctrl_kl.ctrl_relay('KL22', True)
         sleep(1)
         in_a1, in_a2, in_a5, in_a6 = self.__inputs_a()
-        if in_a5 == False and in_a1 == True and in_a6 == True and in_a2 == False:
+        if in_a5 is False and in_a1 is True and in_a6 is True and in_a2 is False:
             pass
         else:
-            mysql_conn.mysql_ins_result("неисправен", '4')
-            if in_a5 == True or in_a1 == False:
-                mysql_conn.mysql_error(41)
-            elif in_a6 == False or in_a2 == True:
-                mysql_conn.mysql_error(42)
+            self.__mysql_conn.mysql_ins_result("неисправен", '4')
+            if in_a5 is True or in_a1 is False:
+                self.__mysql_conn.mysql_error(41)
+            elif in_a6 is False or in_a2 is True:
+                self.__mysql_conn.mysql_error(42)
             return False
-        resist.resist_kohm(590)
-        ctrl_kl.ctrl_relay('KL22', False)
-        mysql_conn.mysql_ins_result("исправен", '4')
-        # Тест 5. Проверка работы 2 канала (К2) блока при снижении уровня
-        # сопротивлении изоляции ниже 30 кОм в цепи 2 канала
-        mysql_conn.mysql_ins_result("идет тест 5", "5")
-        ctrl_kl.ctrl_relay('KL31', False)
+        self.__resist.resist_kohm(590)
+        self.__ctrl_kl.ctrl_relay('KL22', False)
+        self.__mysql_conn.mysql_ins_result("исправен", '4')
+        return True
+
+    def st_test_50_bki_2t(self) -> bool:
+        """
+        Тест 5. Проверка работы 2 канала (К2) блока при снижении уровня
+        сопротивлении изоляции ниже 30 кОм в цепи 2 канала
+        """
+        self.__mysql_conn.mysql_ins_result("идет тест 5", "5")
+        self.__ctrl_kl.ctrl_relay('KL31', False)
         sleep(1)
-        resist.resist_kohm(12)
+        self.__resist.resist_kohm(12)
         sleep(1)
         in_a1, in_a2, in_a5, in_a6 = self.__inputs_a()
-        if in_a5 == True and in_a1 == False and in_a6 == False and in_a2 == True:
+        if in_a5 is True and in_a1 is False and in_a6 is False and in_a2 is True:
             pass
         else:
-            mysql_conn.mysql_ins_result("неисправен", '5')
-            if in_a5 == False or in_a1 == True:
-                mysql_conn.mysql_error(43)
-            elif in_a6 == True or in_a2 == False:
-                mysql_conn.mysql_error(44)
+            self.__mysql_conn.mysql_ins_result("неисправен", '5')
+            if in_a5 is False or in_a1 is True:
+                self.__mysql_conn.mysql_error(43)
+            elif in_a6 is True or in_a2 is False:
+                self.__mysql_conn.mysql_error(44)
             return False
-        resist.resist_kohm(590)
-        mysql_conn.mysql_ins_result("исправен", '5')
-        # Тест 6. Проверка работы 2 канала (К2) блока от кнопки «Проверка БКИ» в цепи 2 канала
-        mysql_conn.mysql_ins_result("идет тест 6", "6")
-        if self.__subtest_21():
+        self.__resist.resist_kohm(590)
+        self.__mysql_conn.mysql_ins_result("исправен", '5')
+        return True
+
+    def st_test_60_bki_2t(self) -> bool:
+        """
+        Тест 6. Проверка работы 2 канала (К2) блока от кнопки «Проверка БКИ» в цепи 2 канала
+        """
+        if self.__subtest_21(6.1, 6):
             pass
         else:
-            mysql_conn.mysql_ins_result("неисправен", '6')
-        ctrl_kl.ctrl_relay('KL22', True)
+            self.__mysql_conn.mysql_ins_result("неисправен", '6')
+        self.__ctrl_kl.ctrl_relay('KL22', True)
         in_a1, in_a2, in_a5, in_a6 = self.__inputs_a()
-        if in_a5 == True and in_a1 == False and in_a6 == False and in_a2 == True:
+        if in_a5 is True and in_a1 is False and in_a6 is False and in_a2 is True:
             pass
         else:
-            mysql_conn.mysql_ins_result("неисправен", '6')
-            if in_a5 == False or in_a1 == True:
-                mysql_conn.mysql_error(45)
-            elif in_a6 == True or in_a2 == False:
-                mysql_conn.mysql_error(46)
+            self.__mysql_conn.mysql_ins_result("неисправен", '6')
+            if in_a5 is False or in_a1 is True:
+                self.__mysql_conn.mysql_error(45)
+            elif in_a6 is True or in_a2 is False:
+                self.__mysql_conn.mysql_error(46)
             return False
-        mysql_conn.mysql_ins_result("исправен", '6')
+        self.__mysql_conn.mysql_ins_result("исправен", '6')
         return True
     
-    def __subtest_21(self):
+    def __subtest_21(self, subtest_2_num: float, test_2_num: int) -> bool:
+        self.__mysql_conn.mysql_ins_result(f'идёт тест {subtest_2_num}', f'{test_2_num}')
         in_a1, in_a2, in_a5, in_a6 = self.__inputs_a()
-        if in_a5 == True and in_a1 == False and in_a6 == True and in_a2 == False:
+        if in_a5 is True and in_a1 is False and in_a6 is True and in_a2 is False:
             pass
         else:
-            if in_a5 == False or in_a1 == True:
-                mysql_conn.mysql_error(37)
-            elif in_a6 == False or in_a2 == True:
-                mysql_conn.mysql_error(38)
+            self.__mysql_conn.mysql_ins_result("неисправен", f'{test_2_num}')
+            self.__fault.debug_msg(f'тест {subtest_2_num} положение выходов не соответствует', 1)
+            if in_a5 is False or in_a1 is True:
+                self.__mysql_conn.mysql_error(37)
+            elif in_a6 is False or in_a2 is True:
+                self.__mysql_conn.mysql_error(38)
             return False
+        self.__fault.debug_msg(f'тест {subtest_2_num} положение выходов соответствует', 4)
         return True
     
-    @staticmethod
-    def __inputs_a():
-        in_a1 = read_mb.read_discrete(1)
-        in_a2 = read_mb.read_discrete(2)
-        in_a5 = read_mb.read_discrete(5)
-        in_a6 = read_mb.read_discrete(6)
+    def __inputs_a(self):
+        in_a1 = self.__read_mb.read_discrete(1)
+        in_a2 = self.__read_mb.read_discrete(2)
+        in_a5 = self.__read_mb.read_discrete(5)
+        in_a6 = self.__read_mb.read_discrete(6)
+        if in_a1 is None or in_a2 is None or in_a5 is None or in_a6 is None:
+            raise ModbusConnectException(f'нет связи с контроллером')
         return in_a1, in_a2, in_a5, in_a6
 
 
 if __name__ == '__main__':
+    test_bki_2t = TestBKI2T()
+    reset_test_bki_2t = ResetRelay()
+    mysql_conn_bki_2t = MySQLConnect()
+    fault = Bug(True)
     try:
-        test_bki_2t = TestBKI2T()
         if test_bki_2t.st_test_bki_2t():
-            mysql_conn.mysql_block_good()
+            mysql_conn_bki_2t.mysql_block_good()
             my_msg('Блок исправен')
         else:
-            mysql_conn.mysql_block_bad()
-            my_msg('Блок неисправен')
+            mysql_conn_bki_2t.mysql_block_bad()
+            my_msg('Блок неисправен', '#A61E1E')
     except OSError:
         my_msg("ошибка системы")
     except SystemError:
         my_msg("внутренняя ошибка")
+    except ModbusConnectException as mce:
+        fault.debug_msg(mce, 1)
+        my_msg(str(mce), '#A61E1E')
     finally:
-        reset.reset_all()
+        reset_test_bki_2t.reset_all()
         exit()
