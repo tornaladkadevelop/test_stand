@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from OpenOPC import client
-# from sys import exit
 from time import sleep
 
 __all__ = ['CtrlKL', 'ReadMB']
@@ -315,9 +314,6 @@ class ReadMB(object):
         list_str[0] = list_str[0][2:-1]
         if list_str[2] == "'Good'":
             return eval(list_str[1])
-        # elif list_str[2] == "'Bad'":
-        #     fault.debug_msg(f'нет связи с контроллером', 1)
-        #     return None
         else:
             return None
 

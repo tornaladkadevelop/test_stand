@@ -6,7 +6,7 @@ from time import time, sleep
 from my_msgbox import *
 from gen_mb_client import *
 
-__all__ = ["Bug", "ResetRelay", "Resistor", "DeltaTimeNoneKL63", "MyException", "Result"]
+__all__ = ["Bug", "ResetRelay", "Resistor", "DeltaTimeNoneKL63", "ModbusConnectException", "ResultMsg"]
 
 kernel32 = ctypes.windll.kernel32
 kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
@@ -582,23 +582,23 @@ class Resistor(object):
         ctrl_kl.ctrl_relay('KL15', True)
         
 
-class MyException(Exception):
+class ModbusConnectException(Exception):
+    """вываливается когда нет связи по modbus"""
     pass
 
 
-class Result(object):
+class ResultMsg(object):
     """
     исправность/неисправность блока
     """
     reset = ResetRelay()
 
-    def test_error(self, test_number):
-        self.test_number = test_number
-        msg = (f'Тест: {self.test_number} не пройден')
+    def test_error(self, test_number: float):
+        msg = (f'Тест: {test_number} не пройден')
         my_msg(msg)
         self.reset.reset_all()
 
     def test_good(self):
-        msg = "Тестирование завершено: \n Блок исправен "
+        msg = "Тестирование завершено:\nБлок исправен "
         my_msg(msg)
         self.reset.reset_all()
