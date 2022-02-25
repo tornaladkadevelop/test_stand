@@ -209,8 +209,8 @@ class CtrlKL(object):
         list_str[0] = list_str[0][2:-1]
         if list_str[2] == "'Good'":
             analog_inp_fl = float(list_str[1])
-        elif list_str[2] == "'Bad'":
-            raise ModbusConnectException("нет связи с контроллером")
+        # elif list_str[2] == "'Bad'":
+        #     raise ModbusConnectException("нет связи с контроллером")
         else:
             opc['Устройство.tegs.in_num_alg'] = 0
             return 9999
@@ -236,8 +236,8 @@ class CtrlKL(object):
         list_str[0] = list_str[0][2:-1]
         if list_str[2] == "'Good'":
             pass
-        elif list_str[2] == "'Bad'":
-            raise ModbusConnectException("нет связи с контроллером")
+        # elif list_str[2] == "'Bad'":
+        #     raise ModbusConnectException("нет связи с контроллером")
         else:
             opc['Устройство.tegs.in_num_alg'] = 0
             return 9999
@@ -261,8 +261,8 @@ class CtrlKL(object):
         list_str[0] = list_str[0][2:-1]
         if list_str[2] == "'Good'":
             pass
-        elif list_str[2] == "'Bad'":
-            raise ModbusConnectException("нет связи с контроллером")
+        # elif list_str[2] == "'Bad'":
+        #     raise ModbusConnectException("нет связи с контроллером")
         else:
             opc['Устройство.tegs.in_num_alg'] = 0
             return 9999
@@ -286,8 +286,8 @@ class CtrlKL(object):
         list_str[0] = list_str[0][2:-1]
         if list_str[2] == "'Good'":
             pass
-        elif list_str[2] == "'Bad'":
-            raise ModbusConnectException("нет связи с контроллером")
+        # elif list_str[2] == "'Bad'":
+        #     raise ModbusConnectException("нет связи с контроллером")
         else:
             opc['Устройство.tegs.in_num_alg'] = 0
             return 9999
@@ -324,8 +324,8 @@ class ReadMB(object):
         list_str[0] = list_str[0][2:-1]
         if list_str[2] == "'Good'":
             return eval(list_str[1])
-        elif list_str[2] == "'Bad'":
-            raise ModbusConnectException("нет связи с контроллером")
+        # elif list_str[2] == "'Bad'":
+        #     raise ModbusConnectException("нет связи с контроллером")
         else:
             return None
 
@@ -354,8 +354,8 @@ class ReadMB(object):
             #             (analog_max_code - analog_min_code) + analog_min
             meas_volt = analog_inp_fl * analog_max / analog_max_code
             return meas_volt
-        elif list_str[2] == "'Bad'":
-            raise ModbusConnectException("нет связи с контроллером")
+        # elif list_str[2] == "'Bad'":
+        #     raise ModbusConnectException("нет связи с контроллером")
         else:
             return 999
 
@@ -383,8 +383,8 @@ class ReadMB(object):
             meas_volt = ((analog_inp_fl - analog_min_code) * (analog_max - analog_min)) / \
                         (analog_max_code - analog_min_code) + analog_min
             return meas_volt
-        elif list_str[2] == "'Bad'":
-            raise ModbusConnectException("нет связи с контроллером")
+        # elif list_str[2] == "'Bad'":
+        #     raise ModbusConnectException("нет связи с контроллером")
         else:
             return 999
 
@@ -403,8 +403,8 @@ class ReadMB(object):
         if list_str[2] == "'Good'":
             analog_inp_fl = float(list_str[1])
             return analog_inp_fl
-        elif list_str[2] == "'Bad'":
-            raise ModbusConnectException("нет связи с контроллером")
+        # elif list_str[2] == "'Bad'":
+        #     raise ModbusConnectException("нет связи с контроллером")
         else:
             return 999
 
@@ -423,8 +423,8 @@ class ReadMB(object):
         if list_str[2] == "'Good'":
             analog_inp_fl = float(list_str[1])
             return analog_inp_fl
-        elif list_str[2] == "'Bad'":
-            raise ModbusConnectException("нет связи с контроллером")
+        # elif list_str[2] == "'Bad'":
+        #     raise ModbusConnectException("нет связи с контроллером")
         else:
             return 999
 
@@ -443,7 +443,7 @@ class ReadMB(object):
         if list_str[2] == "'Good'":
             analog_inp_fl = float(list_str[1])
             return analog_inp_fl
-        elif list_str[2] == "'Bad'":
-            raise ModbusConnectException("нет связи с контроллером")
+        # elif list_str[2] == "'Bad'":
+        #     raise ModbusConnectException("нет связи с контроллером")
         else:
             return 999

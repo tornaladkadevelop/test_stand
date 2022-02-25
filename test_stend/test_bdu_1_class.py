@@ -224,6 +224,8 @@ if __name__ == '__main__':
         my_msg("ошибка системы")
     except SystemError:
         my_msg("внутренняя ошибка")
+    except ModbusConnectException as mce:
+        print(mce)
     finally:
         reset_test_bdu_1.reset_all()
         exit()
