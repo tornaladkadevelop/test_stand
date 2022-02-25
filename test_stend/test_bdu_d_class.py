@@ -238,7 +238,7 @@ class TestBDUD(object):
 
     def st_test_bdu_d(self) -> bool:
         """
-            главная функция которая собирает все остальные
+            Главная функция которая собирает все остальные
         """
         if self.st_test_1_bdu_d():
             if self.st_test_20_bdu_d():
