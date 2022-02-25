@@ -6,8 +6,7 @@ from time import time, sleep
 from my_msgbox import *
 from gen_mb_client import *
 
-__all__ = ["Bug", "ResetRelay", "Resistor", "DeltaTimeNoneKL63", "ModbusConnectException",
-           "DataBaseConnectException", "ResultMsg"]
+__all__ = ["Bug", "ResetRelay", "Resistor", "DeltaTimeNoneKL63", "ModbusConnectException", "ResultMsg"]
 
 kernel32 = ctypes.windll.kernel32
 kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
@@ -585,11 +584,6 @@ class Resistor(object):
 
 class ModbusConnectException(Exception):
     """вываливается когда нет связи по modbus"""
-    pass
-
-
-class DataBaseConnectException(Exception):
-    """вываливается когда нет связи с базой данных"""
     pass
 
 
