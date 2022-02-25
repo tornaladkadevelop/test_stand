@@ -295,6 +295,8 @@ class TestBDU1M(object):
     def __inputs_a(self):
         in_a1 = self.__read_mb.read_discrete(1)
         in_a2 = self.__read_mb.read_discrete(2)
+        if in_a1 is None or in_a2 is None:
+            self.__fault.debug_msg("нет связи с контроллером", 1)
         return in_a1, in_a2
 
     def st_test_bdu_1m(self):
