@@ -227,7 +227,7 @@ if __name__ == '__main__':
         fault.debug_msg("внутренняя ошибка", 1)
     except ModbusConnectException as mce:
         fault.debug_msg(mce, 1)
-        my_msg(str(mce))
+        my_msg(str(mce), '#A61E1E')
     finally:
         reset_test_bdu_1.reset_all()
         exit()
